@@ -1,0 +1,23 @@
+# Nix
+result
+result-*
+*.drv
+
+# direnv
+.direnv/
+
+# Editor/OS junk
+.DS_Store
+*.swp
+*.swo
+
+# Local secrets/key material
+*.agekey
+secrets/*.key
+
+# Optional local env files
+.env
+.env.*
+
+# Personal project documents
+documents/
