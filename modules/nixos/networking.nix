@@ -8,6 +8,16 @@
     allowPing = true;
   };
 
+  services.openssh = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
   # Optional VPN toggle (disabled by default)
   networking.mullvad.enable = false;
 }

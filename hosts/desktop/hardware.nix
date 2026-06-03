@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   # TODO: Replace with generated hardware config and Disko layout.
   # Suggested bootstrap flow:
@@ -11,6 +11,15 @@
 
   # AMD microcode
   hardware.cpu.amd.updateMicrocode = true;
+
+  # AMD GPU (RX 7700 XT) via in-kernel amdgpu driver.
+  services.xserver.videoDrivers = [ "amdgpu" ];
+
+  # Bluetooth hardware is present; keep powered off by default.
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
 
   # If/when enabling CachyOS kernel, swap this line:
   # boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
