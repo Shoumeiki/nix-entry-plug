@@ -1,26 +1,108 @@
 { ... }:
 {
-  # TODO: Replace with generated hardware config and Disko layout.
-  # Suggested bootstrap flow:
-  # 1) Generate hardware config
-  # 2) Add disko device layout (Btrfs subvolumes: @ @home @nix @log @snapshots)
-  # 3) Apply and validate
+  # -------------------------------------------------------------------------
+  # Disk layout via Disko
+  # -------------------------------------------------------------------------
+  # TODO: Verify the NVMe device name before running disko.
+  #       Boot from the installer and run: lsblk -d -o NAME,SIZE,MODEL
+  #       Then update `device` below if it differs from nvme0n1.
+  # -------------------------------------------------------------------------
+  disko.devices = {
+    disk = {
+      main = {
+        type = "disk";
+        device = "/dev/nvme0n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            ESP = {
+              priority = 1;
+              size = "512M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
+              };
+            };
+            root = {
+              priority = 2;
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-L" "nixos" "-f" ];
+                subvolumes = {
+                  "@" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@home" = {
+                    mountpoint = "/home";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@snapshots" = {
+                    mountpoint = "/.snapshots";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  };
 
+  # -------------------------------------------------------------------------
+  # Boot
+  # -------------------------------------------------------------------------
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.configurationLimit = 10;
 
-  # AMD microcode
+  # -------------------------------------------------------------------------
+  # CPU / GPU
+  # -------------------------------------------------------------------------
   hardware.cpu.amd.updateMicrocode = true;
 
-  # AMD GPU (RX 7700 XT) via in-kernel amdgpu driver.
+  # AMD RX 7700 XT uses the in-kernel amdgpu driver.
   services.xserver.videoDrivers = [ "amdgpu" ];
 
-  # Bluetooth hardware is present; keep powered off by default.
+  # -------------------------------------------------------------------------
+  # Bluetooth
+  # -------------------------------------------------------------------------
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = false;
   };
+  services.blueman.enable = true;
 
-  # If/when enabling CachyOS kernel, swap this line:
-  # boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+  # -------------------------------------------------------------------------
+  # Kernel: CachyOS (BORE scheduler + LTO)
+  # -------------------------------------------------------------------------
+  # Provided by the Chaotic Nyx flake (chaotic.nixosModules.default in flake.nix).
+  # The binary cache is configured automatically by that module — do not add
+  # inputs.nixpkgs.follows to the chaotic input or cache misses will force a
+  # full from-source kernel build.
+  #
+  # During fresh installation, pass the cache manually to nixos-install:
+  #   --option extra-substituters 'https://nyx-cache.chaotic.cx/'
+  #   --option extra-trusted-public-keys 'nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk='
+  # (see README for the full install command)
+  boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+
+  # sched-ext: optional runtime scheduler replacement (Linux 6.12+).
+  # scx_lavd is well-suited for AMD gaming workloads; leave disabled to use
+  # the built-in BORE scheduler, which is already excellent for gaming.
+  # services.scx.enable = true;
+  # services.scx.scheduler = "scx_lavd";
 }

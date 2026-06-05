@@ -9,6 +9,7 @@
     ../../modules/nixos/docker.nix
     ../../modules/nixos/networking.nix
     ../../modules/nixos/users.nix
+    ../../modules/nixos/seafile.nix
   ];
 
   networking.hostName = "nixos-desktop";
@@ -27,7 +28,7 @@
   };
 
   # Required for stateful paths and module defaults.
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 
   # Secrets loaded by sops-nix module.
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
