@@ -13,6 +13,16 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # Explicitly route portals to avoid ambiguity warnings when multiple backends
+    # are installed (hyprland portal is added automatically by programs.hyprland).
+    config = {
+      "Hyprland" = {
+        default = [ "hyprland" "gtk" ];
+      };
+      common = {
+        default = [ "gtk" ];
+      };
+    };
   };
 
   services.pipewire = {
@@ -50,7 +60,7 @@
 
   environment.systemPackages = with pkgs; [
     waybar
-    rofi-wayland
+    rofi    # rofi-wayland is depreciated
     mako
 
     hyprlock

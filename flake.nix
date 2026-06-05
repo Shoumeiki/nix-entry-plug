@@ -48,14 +48,14 @@
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           catppuccin.nixosModules.catppuccin
-          inputs.chaotic.nixosModules.default
+          # inputs.chaotic.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.sharedModules = [
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
             ];
             home-manager.users.ellen = import ./modules/home/default.nix;
           }

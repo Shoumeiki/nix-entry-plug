@@ -46,8 +46,7 @@
       # Smart cd (zoxide replaces cd; use 'zi' for interactive picker)
       zoxide init fish | source
 
-      # fzf key bindings (Ctrl+R history, Ctrl+T files, Alt+C dirs)
-      fzf --fish | source
+      # fzf key bindings are injected automatically by programs.fzf.enableFishIntegration
     '';
   };
 

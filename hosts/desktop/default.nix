@@ -9,7 +9,6 @@
     ../../modules/nixos/docker.nix
     ../../modules/nixos/networking.nix
     ../../modules/nixos/users.nix
-    ../../modules/nixos/seafile.nix
   ];
 
   networking.hostName = "nixos-desktop";

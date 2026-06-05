@@ -51,7 +51,6 @@
           enabled = true;
           size = 6;
           passes = 2;
-          new_optimizations = true;
           ignore_opacity = false;
         };
 
@@ -62,7 +61,7 @@
         };
       };
 
-     animations = {
+      animations = {
         enabled = true;
         bezier = [
           "easeOut,0.05,0.9,0.1,1.05"
@@ -103,7 +102,8 @@
         # Apps
         "$mod,Space,exec,rofi -show drun"
         "$mod,E,exec,footclient -e yazi"
-        "$mod,L,exec,hyprlock"
+        # Lock screen
+        "$mod SHIFT,L,exec,hyprlock"
 
         # Clipboard picker
         "$mod,V,exec,cliphist list | rofi -dmenu | cliphist decode | wl-copy"
@@ -116,7 +116,7 @@
         "$mod,F,fullscreen,0"
         "$mod SHIFT,F,togglefloating,"
         "$mod,P,pseudo,"
-        "$mod,J,togglesplit,"
+        "$mod SHIFT,J,togglesplit,"
 
         # Move focus
         "$mod,left,movefocus,l"

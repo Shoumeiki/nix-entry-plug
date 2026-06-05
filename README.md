@@ -40,8 +40,7 @@ secrets/
 
 ## What is already wired
 
-- CachyOS kernel (`linuxPackages_cachyos-lto`) via Chaotic Nyx — BORE scheduler + LTO, binary cache auto-configured
-- Flake inputs: nixpkgs-unstable, home-manager, sops-nix, disko, catppuccin, chaotic-nyx
+- Flake inputs: nixpkgs-unstable, home-manager, sops-nix, disko, catppuccin (Chaotic Nyx / CachyOS kernel commented out — uncomment to enable)
 - Disko Btrfs layout: `@` `@home` `@nix` `@log` `@snapshots` subvolumes
 - sops-nix: user password hashes and SSH authorized keys read from encrypted file
 - Catppuccin Mocha applied globally across Hyprland, foot, bat, delta, Zed, GTK, Qt
@@ -209,15 +208,7 @@ If it differs, update `device` in `hosts/desktop/hardware.nix` before continuing
 **Option A — Clone over the network (requires git on the ISO):**
 ```sh
 nix-shell -p git
-git clone https://github.com/youruser/nix-systems /mnt/etc/nixos
-# Or from your Forgejo instance
-```
-
-**Option B — Copy from USB:**
-```sh
-mkdir /tmp/config
-mount /dev/sdX1 /tmp/config      # adjust device
-cp -r /tmp/config/nix-systems /mnt/etc/nixos
+git clone https://github.com/Shoumeiki/nix-systems /mnt/etc/nixos
 ```
 
 The configuration should end up at `/mnt/etc/nixos/nix-systems` (or wherever you prefer).
@@ -320,12 +311,6 @@ Remove the USB when prompted. The system should boot to the SDDM login screen.
 - [ ] Update Forgejo credential helper in `modules/home/git.nix`
 - [ ] Verify audio: `pactl info | grep Server`
 - [ ] Run `hyprctl output create headless` manually if the KVM workaround did not fire
-- [ ] Set up cloud sync: add Seafile secrets to `secrets/secrets.yaml`, re-encrypt, rebuild — then check `http://localhost:8080`
-  ```sh
-  # Check Seafile container status
-  docker compose -f /etc/seafile/docker-compose.yml ps
-  # Follow startup logs
-  docker compose -f /etc/seafile/docker-compose.yml logs -f
   ```
 
 ---

@@ -9,7 +9,7 @@
       vo = "gpu";
       ao = "pipewire";
       sub-auto = "fuzzy";       # Load subtitles automatically
-      sub-font = "Atkinson Hyperlegible";
+      sub-font = "Inter";
       sub-font-size = 44;
       volume = 100;
       save-position-on-quit = true;
@@ -33,7 +33,6 @@
     defaultApplications = {
       # Video
       "video/mp4"        = "mpv.desktop";
-      "video/mkv"        = "mpv.desktop";
       "video/webm"       = "mpv.desktop";
       "video/x-matroska" = "mpv.desktop";
       "video/avi"        = "mpv.desktop";

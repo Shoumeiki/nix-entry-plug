@@ -38,8 +38,8 @@
   home.packages = with pkgs; [
     papirus-icon-theme
     nwg-look            # GTK theme configurator (GUI)
-    qt5ct
-    qt6ct
+    # qt5ct
+    qt6Packages.qt6ct
     kdePackages.qtstyleplugin-kvantum
   ];
 }
