@@ -1,11 +1,5 @@
 { ... }:
 {
-  # -------------------------------------------------------------------------
-  # Foot terminal (Wayland-native, server/client mode)
-  # Home Manager creates a systemd user service (foot-server.service) that
-  # starts automatically on graphical login. New windows open instantly via
-  # footclient rather than spawning a new process each time.
-  # -------------------------------------------------------------------------
   programs.foot = {
     enable = true;
     server.enable = true;

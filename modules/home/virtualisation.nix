@@ -1,8 +1,5 @@
 { ... }:
 {
-  # ---------------------------------------------------------------------------
-  # XDG MIME defaults for remote desktop / VM console protocols
-  # ---------------------------------------------------------------------------
   xdg.mimeApps.defaultApplications = {
     # RDP files (e.g. downloaded from a Windows server or Azure)
     "application/x-rdp"        = "org.remmina.Remmina.desktop";

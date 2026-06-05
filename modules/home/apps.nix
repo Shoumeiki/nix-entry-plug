@@ -1,8 +1,5 @@
 { inputs, pkgs, ... }:
 {
-  # -------------------------------------------------------------------------
-  # mpv (primary video player)
-  # -------------------------------------------------------------------------
   programs.mpv = {
     enable = true;
     config = {
@@ -31,9 +28,6 @@
     };
   };
 
-  # -------------------------------------------------------------------------
-  # XDG default applications
-  # -------------------------------------------------------------------------
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -61,14 +55,10 @@
     };
   };
 
-  # -------------------------------------------------------------------------
-  # Application packages
-  # Open questions noted with comments where the spec lists alternatives.
-  # -------------------------------------------------------------------------
   home.packages = with pkgs; [
     # Browsers
     librewolf
-    inputs.helium-nix.packages.${pkgs.system}.default  # Chromium-based, built-in adblock
+    inputs.helium-nix.packages.${pkgs.system}.default
 
     # Communication
     signal-desktop
@@ -81,7 +71,6 @@
 
     # Image
     imv
-
     krita
   ];
 }

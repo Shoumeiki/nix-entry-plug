@@ -15,11 +15,9 @@
       diff.colorMoved = "default";
       rerere.enabled = true;      # Remember conflict resolutions
 
-      # Credential helpers for both remotes
+      # Credential helpers for remotes
       "credential \"https://github.com\"".helper =
         "!/usr/bin/env gh auth git-credential";
-      "credential \"https://forgejo.example.com\"".helper =
-        "store";  # replace with your Forgejo credential helper
     };
 
     aliases = {

@@ -1,23 +1,5 @@
 { config, pkgs, lib, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Seafile self-hosted cloud sync
-  # ---------------------------------------------------------------------------
-  # Runs as two Docker containers (MariaDB + Seafile CE) managed by a
-  # systemd service. Containers start on boot and restart on failure.
-  #
-  # Web UI:    http://localhost:8080  (local machine only)
-  # Mobile:    Use the Seafile Android app, point it at your LAN IP:8080
-  #            or set up a reverse proxy + domain for external access.
-  #
-  # First-run note: on the very first start, Seafile takes 30-60 seconds
-  # to initialise the database. The UI will be unavailable until that
-  # completes. Check logs with: docker compose -f /etc/seafile/docker-compose.yml logs -f
-  # ---------------------------------------------------------------------------
-
-  # ---------------------------------------------------------------------------
-  # Secrets (add these values to secrets/secrets.yaml before rebuilding)
-  # ---------------------------------------------------------------------------
   sops.secrets."seafile/db-root-password"  = {};
   sops.secrets."seafile/admin-email"       = {};
   sops.secrets."seafile/admin-password"    = {};
@@ -34,17 +16,11 @@
     restartUnits = [ "seafile.service" ];
   };
 
-  # ---------------------------------------------------------------------------
-  # Deploy the compose file declaratively
-  # ---------------------------------------------------------------------------
   environment.etc."seafile/docker-compose.yml" = {
     source = ../../docker/seafile/docker-compose.yml;
     mode = "0444";
   };
 
-  # ---------------------------------------------------------------------------
-  # Systemd service
-  # ---------------------------------------------------------------------------
   systemd.services.seafile = {
     description = "Seafile cloud sync (Docker Compose)";
     after       = [ "docker.service" "network-online.target" ];
@@ -65,7 +41,6 @@
     };
   };
 
-  # Open the Seafile port on the local firewall if you want LAN access.
-  # For local-only use (localhost:8080) this is not needed.
-  # networking.firewall.allowedTCPPorts = [ 8080 ];
+
+  networking.firewall.allowedTCPPorts = [ 8081 ];
 }

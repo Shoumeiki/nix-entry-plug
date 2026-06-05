@@ -1,12 +1,7 @@
 { pkgs, ... }:
 {
-  # -------------------------------------------------------------------------
-  # Neovim (configured as a Home Manager program)
   # LazyVim is bootstrapped separately on first login:
   #   git clone https://github.com/LazyVim/starter ~/.config/nvim
-  # After that, LazyVim handles plugin installation via its own bootstrap.
-  # extraPackages below make LSP servers and formatters available in PATH.
-  # -------------------------------------------------------------------------
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -33,9 +28,6 @@
     ];
   };
 
-  # -------------------------------------------------------------------------
-  # Zed editor (GUI, secondary editor)
-  # -------------------------------------------------------------------------
   programs.zed-editor = {
     enable = true;
     extensions = [ "nix" "toml" "fish" "env" ];

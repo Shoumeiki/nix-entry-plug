@@ -1,10 +1,6 @@
 { ... }:
 {
-  # -------------------------------------------------------------------------
-  # Hyprland window manager config
-  # Monitor connector names (DP-1, HDMI-A-1) are KVM/hardware dependent.
   # Run `hyprctl monitors` after first boot to verify connector names.
-  # -------------------------------------------------------------------------
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -21,8 +17,6 @@
       ];
 
       exec-once = [
-        # Create headless output immediately so apps never see zero outputs
-        # (required for the KVM switch that physically disconnects monitors)
         "hyprctl output create headless"
         "waybar"
         "mako"
@@ -33,9 +27,6 @@
         "wl-paste --type image --watch cliphist store"
       ];
 
-      # -----------------------------------------------------------------------
-      # Input
-      # -----------------------------------------------------------------------
       input = {
         kb_layout = "us";
         follow_mouse = 1;
@@ -43,9 +34,6 @@
         accel_profile = "flat";
       };
 
-      # -----------------------------------------------------------------------
-      # General layout
-      # -----------------------------------------------------------------------
       general = {
         gaps_in = 4;
         gaps_out = 8;
@@ -54,9 +42,6 @@
         resize_on_border = true;
       };
 
-      # -----------------------------------------------------------------------
-      # Decoration (transparency + blur)
-      # -----------------------------------------------------------------------
       decoration = {
         rounding = 8;
         active_opacity = 1.0;
@@ -77,10 +62,7 @@
         };
       };
 
-      # -----------------------------------------------------------------------
-      # Animations
-      # -----------------------------------------------------------------------
-      animations = {
+     animations = {
         enabled = true;
         bezier = [
           "easeOut,0.05,0.9,0.1,1.05"
@@ -95,17 +77,11 @@
         ];
       };
 
-      # -----------------------------------------------------------------------
-      # Dwindle layout
-      # -----------------------------------------------------------------------
       dwindle = {
         pseudotile = true;
         preserve_split = true;
       };
 
-      # -----------------------------------------------------------------------
-      # Misc
-      # -----------------------------------------------------------------------
       misc = {
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
@@ -113,10 +89,6 @@
         vfr = true;
       };
 
-      # -----------------------------------------------------------------------
-      # Keybindings
-      # $mod = Windows/Super key
-      # -----------------------------------------------------------------------
       "$mod" = "SUPER";
 
       bind = [
@@ -191,9 +163,6 @@
         "$mod,mouse:273,resizewindow"
       ];
 
-      # -----------------------------------------------------------------------
-      # Window rules
-      # -----------------------------------------------------------------------
       windowrulev2 = [
         "suppressevent maximize, class:.*"
         "float,class:^(pavucontrol)$"
