@@ -10,7 +10,6 @@
     ../../modules/nixos/networking.nix
     ../../modules/nixos/users.nix
     ../../modules/nixos/seafile.nix
-    ../../modules/nixos/virtualisation.nix
   ];
 
   networking.hostName = "nixos-desktop";

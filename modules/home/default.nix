@@ -9,7 +9,6 @@
     ./apps.nix
     ./media.nix
     ./git.nix
-    ./virtualisation.nix
   ];
 
   home.username = "ellen";
