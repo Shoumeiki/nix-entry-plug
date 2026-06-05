@@ -1,5 +1,5 @@
 {
-  description = "Ellen's NixOS gaming desktop (Hyprland + Home Manager)";
+  description = "Ellen's NixOS desktop (Hyprland + Home Manager)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -32,7 +32,7 @@
     # Do NOT add inputs.nixpkgs.follows to chaotic.
     # Chaotic Nyx pins its own nixpkgs; overriding it causes the kernel store
     # path to differ from the binary cache and triggers a from-source build.
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    # chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs = inputs @ { self, nixpkgs, home-manager, sops-nix, disko, catppuccin, ... }:
