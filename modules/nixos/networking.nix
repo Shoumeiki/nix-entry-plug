@@ -19,6 +19,4 @@
       PermitRootLogin = "no";
     };
   };
-
-  networking.mullvad.enable = false;
 }
