@@ -48,21 +48,24 @@
     # No swap in the VM, so don't let disko declare one and don't try
     # to resume from it.
     swapDevices = lib.mkForce [ ];
-    boot.resumeDevice = lib.mkForce "";
 
-    # `build-vm-with-bootloader` would otherwise try to install Limine
-    # into the virtual ESP. Fall back to systemd-boot for the VM.
-    boot.loader = {
-      limine.enable = lib.mkForce false;
-      systemd-boot.enable = lib.mkForce true;
+    boot = {
+      resumeDevice = lib.mkForce "";
+
+      # `build-vm-with-bootloader` would otherwise try to install Limine
+      # into the virtual ESP. Fall back to systemd-boot for the VM.
+      loader = {
+        limine.enable = lib.mkForce false;
+        systemd-boot.enable = lib.mkForce true;
+      };
+
+      # Force kernel output to the serial console so `-nographic` works,
+      # and bump verbosity so we see early-boot messages if anything hangs.
+      kernelParams = [
+        "console=ttyS0,115200n8"
+        "console=tty1"
+        "loglevel=7"
+      ];
     };
-
-    # Force kernel output to the serial console so `-nographic` works,
-    # and bump verbosity so we see early-boot messages if anything hangs.
-    boot.kernelParams = [
-      "console=ttyS0,115200n8"
-      "console=tty1"
-      "loglevel=7"
-    ];
   };
 }
