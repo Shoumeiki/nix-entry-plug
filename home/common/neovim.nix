@@ -1,20 +1,18 @@
-_: {
+{ pkgs, ... }:
+{
   # ---------------------------------------------------------------------------
-  # Neovim.
+  # Neovim, declaratively managed via home-manager.
   #
-  # Bare neovim from nixpkgs; LazyVim itself is bootstrapped imperatively
-  # from the LazyVim/starter template on first run. Going imperative for
-  # plugins keeps the editor config a single git repo at ~/.config/nvim
-  # that LazyVim's own update flow (`:Lazy update`) manages, instead of
-  # forcing a rebuild for every plugin tweak.
+  # Options are set in Lua via `extraLuaConfig`. Plugins are pinned by
+  # home-manager (each entry pulls a derivation from pkgs.vimPlugins),
+  # which means a `just switch` reproduces the editor state exactly — no
+  # `:Lazy update` divergence between machines.
   #
-  # To bootstrap on a fresh install:
-  #   git clone https://github.com/LazyVim/starter ~/.config/nvim
-  #   rm -rf ~/.config/nvim/.git    # drop the starter's git history
-  #   nvim                          # Lazy.nvim auto-installs plugins on first launch
+  # Theming (colours, italics, statusline accents) is pulled from Stylix
+  # via stylix.targets.neovim automatically.
   #
-  # If/when we want fully declarative plugin management, swap this module
-  # for nix-community/nixvim with its LazyVim preset.
+  # Grow this list deliberately: add a plugin only when you've hit the
+  # gap it fills. The goal is a comfortable editor, not a maximal one.
   # ---------------------------------------------------------------------------
 
   programs.neovim = {
@@ -22,5 +20,150 @@ _: {
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
+
+    # Language servers and external tools the editor reaches for. Putting
+    # them here rather than home.packages keeps the "neovim needs this"
+    # relationship visible.
+    extraPackages = with pkgs; [
+      # Nix
+      nil # LSP
+      nixfmt-rfc-style # formatter
+      # Lua (for editing this very config)
+      lua-language-server
+      stylua
+      # Generic
+      ripgrep # used by telescope live_grep
+      fd # used by telescope find_files
+    ];
+
+    plugins = with pkgs.vimPlugins; [
+      # Syntax + parsing.
+      nvim-treesitter.withAllGrammars
+
+      # LSP client + helpers.
+      nvim-lspconfig
+
+      # Fuzzy finder — files, buffers, live grep, lsp symbols.
+      telescope-nvim
+      plenary-nvim # telescope dependency
+
+      # Statusline. Themed by Stylix.
+      lualine-nvim
+
+      # Git: signs in the gutter, hunk staging, blame.
+      gitsigns-nvim
+
+      # Quality-of-life.
+      which-key-nvim # discoverable keybinds
+      nvim-autopairs # auto-insert closing brackets
+      comment-nvim # gcc / gc to toggle comments
+      indent-blankline-nvim # indent guides
+    ];
+
+    extraLuaConfig = ''
+      -- ---------------------------------------------------------------------
+      -- Editor options
+      -- ---------------------------------------------------------------------
+      vim.g.mapleader = " "
+      vim.g.maplocalleader = "\\"
+
+      local opt = vim.opt
+      opt.number = true
+      opt.relativenumber = true
+      opt.mouse = "a"
+      opt.clipboard = "unnamedplus"   -- share clipboard with system
+      opt.expandtab = true
+      opt.shiftwidth = 2
+      opt.tabstop = 2
+      opt.smartindent = true
+      opt.ignorecase = true
+      opt.smartcase = true
+      opt.termguicolors = true
+      opt.signcolumn = "yes"
+      opt.scrolloff = 8
+      opt.updatetime = 250
+      opt.timeoutlen = 400
+      opt.undofile = true
+      opt.splitright = true
+      opt.splitbelow = true
+
+      -- Clear search highlight on <Esc>.
+      vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
+      -- ---------------------------------------------------------------------
+      -- Plugin setup
+      -- ---------------------------------------------------------------------
+      require("nvim-treesitter.configs").setup({
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+
+      require("lualine").setup({ options = { theme = "auto" } })
+
+      require("gitsigns").setup()
+      require("which-key").setup()
+      require("nvim-autopairs").setup()
+      require("Comment").setup()
+      require("ibl").setup()
+
+      -- ---------------------------------------------------------------------
+      -- Telescope
+      -- ---------------------------------------------------------------------
+      local telescope = require("telescope.builtin")
+      vim.keymap.set("n", "<leader>ff", telescope.find_files, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fg", telescope.live_grep,  { desc = "Live grep" })
+      vim.keymap.set("n", "<leader>fb", telescope.buffers,    { desc = "Buffers" })
+      vim.keymap.set("n", "<leader>fh", telescope.help_tags,  { desc = "Help tags" })
+
+      -- ---------------------------------------------------------------------
+      -- LSP — Nix (nil) and Lua (lua-language-server)
+      -- ---------------------------------------------------------------------
+      local lspconfig = require("lspconfig")
+
+      lspconfig.nil_ls.setup({
+        settings = {
+          ["nil"] = {
+            formatting = { command = { "nixfmt" } },
+          },
+        },
+      })
+
+      lspconfig.lua_ls.setup({
+        settings = {
+          Lua = {
+            diagnostics = { globals = { "vim" } },
+          },
+        },
+      })
+
+      -- Buffer-local LSP keybinds on attach.
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local map = function(lhs, rhs, desc)
+            vim.keymap.set("n", lhs, rhs, { buffer = args.buf, desc = desc })
+          end
+          map("gd", vim.lsp.buf.definition,       "Go to definition")
+          map("gr", vim.lsp.buf.references,       "References")
+          map("K",  vim.lsp.buf.hover,            "Hover")
+          map("<leader>rn", vim.lsp.buf.rename,   "Rename symbol")
+          map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+          map("[d", vim.diagnostic.goto_prev,     "Prev diagnostic")
+          map("]d", vim.diagnostic.goto_next,     "Next diagnostic")
+        end,
+      })
+
+      -- Format on save for buffers with an attached LSP that supports it.
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        callback = function(args)
+          local clients = vim.lsp.get_clients({ bufnr = args.buf })
+          for _, client in ipairs(clients) do
+            if client.supports_method("textDocument/formatting") then
+              vim.lsp.buf.format({ bufnr = args.buf, async = false })
+              return
+            end
+          end
+        end,
+      })
+    '';
   };
 }
