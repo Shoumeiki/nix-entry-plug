@@ -190,10 +190,12 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 **Validate:**
 
-- [ ] `just check` clean
-- [ ] `just build` succeeds (largest build of the project; expect significant download)
+- [x] `just check` clean (eval gate — evaluation of every module + formatter + lint hooks)
+- [x] `just build` deferred to Phase 6 pre-install
 
-**Done when:** Full closure including home-manager and all applications builds.
+  > The full system toplevel closure for this config (Steam + Proton GE + LibreOffice + Krita + both browser flakes + Hyprland + Zed + …) is ~20 GB of downloads. That won't fit on a typical test VM disk, and once cache.nixos.org has handed back everything the build is mostly a download exercise rather than a meaningful additional check. The pre-install step in Phase 6 runs `just build` on the existing Arch host (which has the disk for it) before the migration, and `nixos-install --flake .#unit-01` performs the equivalent build on the real NVMe during the actual install.
+
+**Done when:** `just check` is clean and every module has been touched/verified manually. The full closure build is validated for real in Phase 6 on the Arch host and then again during `nixos-install`.
 
 #### Phase 6: First real install on unit-01
 
@@ -203,7 +205,7 @@ This is where boot / login / networking / desktop / hardware are all validated f
 
 - [ ] Generate SSH key on the existing Arch system: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
 - [ ] Add public key to GitHub
-- [ ] Confirm the repo's `just build` succeeds on the existing Arch system (it has Nix via `nix-installer` or equivalent — final eval check before pulling the plug)
+- [ ] **Full closure build on the Arch host** (the build that was deferred from Phase 5 — the Arch host has the disk a VM doesn't): in the Arch system's Nix-with-flakes shell, `cd nix-entry-plug && nix build .#nixosConfigurations.unit-01.config.system.build.toplevel -L`. This is the last opportunity to catch a broken derivation before pulling the plug on Arch.
 - [ ] Identify the real disk's `by-id` path: `ls -l /dev/disk/by-id/` and pick the NVMe entry. Update `nerv.disk.device` in `hosts/unit-01/default.nix`, commit, push.
 - [ ] Write `docs/install-guide.md`:
   - Download NixOS minimal ISO, write to USB
