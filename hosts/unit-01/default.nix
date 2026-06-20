@@ -39,10 +39,12 @@
 
   networking.hostName = "unit-01";
 
-  # Disko target. Set to the real disk's `by-id` path before the first
-  # install (e.g. `/dev/disk/by-id/nvme-...`). `/dev/vda` is a safe
-  # placeholder that won't accidentally match real hardware.
-  nerv.disk.device = "/dev/vda";
+  # Disko target. `/dev/nvme0n1` is the expected enumeration name for
+  # unit-01's primary NVMe — still swap to a `/dev/disk/by-id/nvme-...`
+  # path before the first real install (Phase 6 pre-install), since the
+  # enumeration order isn't guaranteed stable if a second NVMe drive
+  # is added later.
+  nerv.disk.device = "/dev/nvme0n1";
 
   # Pin state version. Matches the NixOS release we're installing
   # (26.05 "Yarara", current stable as of 2026-06). Don't change on an

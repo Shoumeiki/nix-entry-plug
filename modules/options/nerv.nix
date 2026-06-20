@@ -14,8 +14,10 @@
       example = "/dev/disk/by-id/nvme-Samsung_SSD_980_PRO_1TB_...";
       description = ''
         Primary disk device used by Disko. Prefer a `/dev/disk/by-id/...`
-        path on real hardware (stable across reboots); `/dev/vda` is fine
-        for VM testing.
+        path on real hardware — it's stable across reboots and won't
+        shift if another NVMe drive is added later. `/dev/nvme0n1` or
+        `/dev/sda` is acceptable as a working placeholder while you
+        wait to look up the by-id path on the target machine.
       '';
     };
   };
