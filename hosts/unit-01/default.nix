@@ -52,15 +52,22 @@
     # the kernel writing to a console nothing is reading.
     virtualisation.graphics = false;
 
-    # Disko populates `fileSystems`, `swapDevices`, AND generates the
-    # corresponding systemd `.swap` / `.mount` units from its device
-    # tree. In a `build-vm` build those devices (swap label, BTRFS
-    # subvolumes) don't exist on the synthetic disk, so the units sit
-    # waiting forever (e.g. `A start job is running for
-    # /dev/disk/by-label/swap`). `enableConfig = false` makes disko
-    # generate only the partitioning *script* and inject nothing into
-    # the running config — `build-vm` then uses its own root fs.
-    disko.enableConfig = lib.mkForce false;
+    # `build-vm` substitutes its own root filesystem on top of disko's
+    # config, but disko still populates `swapDevices` and `fileSystems`
+    # for the BTRFS subvolumes. systemd-fstab-generator then turns
+    # those into .swap / .mount units that wait forever for devices
+    # the synthetic disk doesn't have (`/dev/disk/by-label/swap`,
+    # `/dev/disk/by-label/nixos`).
+    #
+    # Force both lists empty and override fileSystems with just the
+    # synthetic root, so nothing waits on real hardware.
+    swapDevices = lib.mkForce [ ];
+    fileSystems = lib.mkForce {
+      "/" = {
+        device = "/dev/vda";
+        fsType = "ext4";
+      };
+    };
 
     boot = {
       # `build-vm-with-bootloader` would otherwise try to install Limine
