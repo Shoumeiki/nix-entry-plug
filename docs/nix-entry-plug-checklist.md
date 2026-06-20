@@ -94,8 +94,8 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 **Validate:**
 
-- [ ] `just check` — flake check + statix + deadnix all clean
-- [ ] `just build` — full system closure builds successfully
+- [x] `just check` — flake check + statix + deadnix all clean
+- [x] `just build` — full system closure builds successfully
 
 **Done when:** Config evaluates and builds. Boot / login / networking validation is deferred to Phase 6.
 
