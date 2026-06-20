@@ -6,6 +6,12 @@ set shell := ["bash", "-cu"]
 # Default host for vm / switch / test targets.
 host := "unit-01"
 
+# QEMU display backend. SDL is the most reliable choice from inside a Nix
+# dev shell — the default `gtk` backend often fails to initialise because
+# fontconfig isn't wired up. Override with `QEMU_OPTS="-display gtk" just vm`
+# or run from a shell outside `nix develop`.
+qemu_opts := env_var_or_default("QEMU_OPTS", "-display sdl")
+
 # Show available targets.
 default:
     @just --list
@@ -42,9 +48,18 @@ update:
     nh os switch --hostname {{host}} --update
 
 # Build and launch a VM of the given host (default: unit-01).
+# Boots through the full bootloader stack (Limine) so you can verify
+# specialisations appear in the menu.
 vm:
     nixos-rebuild build-vm-with-bootloader --flake .#{{host}}
-    ./result/bin/run-{{host}}-vm
+    QEMU_OPTS="{{qemu_opts}}" ./result/bin/run-{{host}}-vm
+
+# Headless VM: skips the bootloader and boots the kernel directly into a
+# text console on stdio. Use this when graphics aren't available or when
+# you only need to check boot / login / networking.
+vm-headless:
+    nixos-rebuild build-vm --flake .#{{host}}
+    QEMU_OPTS="-nographic" ./result/bin/run-{{host}}-vm
 
 # Garbage collect: keep the last 5 generations and anything from the last 7 days.
 gc:
