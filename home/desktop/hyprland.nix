@@ -26,16 +26,16 @@
       "$menu" = "rofi -show drun";
 
       # ---- Monitors --------------------------------------------------------
-      # Connector names (DP-1 / DP-2) are placeholders — confirm with
-      # `hyprctl monitors` post-install and edit if different. The KVM
-      # switch has no EDID emulation, so monitors vanish on input
-      # switch; we create a headless output below and bind a fallback
-      # workspace to it so windows don't migrate to the wrong real
-      # output when displays come back.
+      # Connectors as enumerated on unit-01: DP-1 = Gigabyte M32U (left),
+      # HDMI-A-1 = BenQ RD280UA (right). The KVM switch has no EDID
+      # emulation, so monitors vanish on input switch; we create a
+      # headless output (placed off to the right at x = 7680, past the
+      # BenQ's right edge) and pin workspace 10 to it so windows don't
+      # migrate to the wrong real output when displays come back.
       monitor = [
         "DP-1, 3840x2160@144, 0x0, 1"
-        "DP-2, 3840x2560@60, 3840x0, 1"
-        "HEADLESS-2, 1920x1080@60, 5760x0, 1"
+        "HDMI-A-1, 3840x2560@60, 3840x0, 1"
+        "HEADLESS-2, 1920x1080@60, 7680x0, 1"
         ", preferred, auto, 1" # catch-all for anything else
       ];
 
@@ -48,10 +48,10 @@
         "3, monitor:DP-1"
         "4, monitor:DP-1"
         "5, monitor:DP-1"
-        "6, monitor:DP-2, default:true"
-        "7, monitor:DP-2"
-        "8, monitor:DP-2"
-        "9, monitor:DP-2"
+        "6, monitor:HDMI-A-1, default:true"
+        "7, monitor:HDMI-A-1"
+        "8, monitor:HDMI-A-1"
+        "9, monitor:HDMI-A-1"
         "10, monitor:HEADLESS-2, default:true"
       ];
 

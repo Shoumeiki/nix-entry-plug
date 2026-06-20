@@ -1,15 +1,14 @@
-{ pkgs, ... }:
-{
+_: {
   # ---------------------------------------------------------------------------
   # rofi: app launcher / dmenu replacement.
   #
-  # `rofi-wayland` is the Wayland fork; the upstream `rofi` is X11-only.
+  # `pkgs.rofi` is now the unified package (Wayland support was merged
+  # upstream; the old `rofi-wayland` fork is an alias / has been retired).
   # Stylix themes via stylix.targets.rofi.
   # ---------------------------------------------------------------------------
 
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
 
     # Common knobs. Most theming is Stylix-driven; these are functional
     # behaviour, not visuals.

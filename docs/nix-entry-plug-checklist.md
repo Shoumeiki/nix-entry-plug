@@ -101,19 +101,19 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 #### Phase 3: Hardware support and Nix tooling
 
-- [ ] `modules/hardware/amd.nix`:
+- [x] `modules/hardware/amd.nix`:
   - `hardware.cpu.amd.updateMicrocode = true`
   - `hardware.enableRedistributableFirmware = true`
   - `hardware.graphics.enable = true`
   - `hardware.graphics.enable32Bit = true`
-- [ ] `modules/hardware/audio.nix`:
+- [x] `modules/hardware/audio.nix`:
   - PipeWire + WirePlumber, ALSA compat, PulseAudio off
   - `security.rtkit.enable = true`
-- [ ] `modules/hardware/bluetooth.nix`: BlueZ + blueman
-- [ ] `modules/hardware/ssd.nix`: `services.fstrim.enable = true`
-- [ ] `modules/desktop/dconf.nix`: `programs.dconf.enable = true`
-- [ ] `modules/desktop/nix-ld.nix`: `programs.nix-ld.enable = true`
-- [ ] `modules/core/nix-tooling.nix`:
+- [x] `modules/hardware/bluetooth.nix`: BlueZ + blueman
+- [x] `modules/hardware/ssd.nix`: `services.fstrim.enable = true`
+- [x] `modules/desktop/dconf.nix`: `programs.dconf.enable = true`
+- [x] `modules/desktop/nix-ld.nix`: `programs.nix-ld.enable = true`
+- [x] `modules/core/nix-tooling.nix`:
   - nh, nom, nvd packages
   - `programs.nix-index.enable = true`
   - `programs.command-not-found.enable = false`
@@ -128,7 +128,7 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 #### Phase 4: Desktop core + Stylix
 
-- [ ] `modules/desktop/stylix.nix`:
+- [x] `modules/desktop/stylix.nix`:
   - `stylix.enable = true`
   - `stylix.polarity = "dark"`
   - `stylix.base16Scheme` set to Rosé Pine
@@ -136,9 +136,9 @@ Goal: a config that evaluates and builds for a TTY login with networking.
   - Fonts: JetBrains Mono Nerd Font, Inter, Merriweather, Noto Color Emoji
   - Cursor: Bibata Modern Classic
   - Icons: Papirus
-- [ ] `modules/desktop/hyprland.nix`: Hyprland enabled, Wayland session, XWayland
-- [ ] `modules/desktop/xdg-portal.nix`: hyprland + gtk portals
-- [ ] `modules/desktop/greetd.nix`: greetd + ReGreet
+- [x] `modules/desktop/hyprland.nix`: Hyprland enabled, Wayland session, XWayland
+- [x] `modules/desktop/xdg-portal.nix`: hyprland + gtk portals
+- [x] `modules/desktop/greetd.nix`: greetd + ReGreet
 
 **Validate:**
 
@@ -151,13 +151,13 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 ##### Common home
 
-- [ ] `home/ellen.nix`: imports common + desktop
-- [ ] `home/common/default.nix`
-- [ ] `home/common/shell.nix`: fish, starship, atuin, all aliases/abbreviations from spec §6
-- [ ] `home/common/git.nix`: Shoumeiki identity, SSH signing, `init.defaultBranch = "main"`, `push.autoSetupRemote = true`
-- [ ] `home/common/neovim.nix`: Neovim + LazyVim
-- [ ] `home/common/direnv.nix`: direnv + nix-direnv
-- [ ] `home/common/cli-tools.nix`: eza, bat, ripgrep, fd, fzf, zoxide, btop, tldr, dust, duf, procs, jq, yq, fastfetch
+- [x] `home/ellen.nix`: imports common + desktop
+- [x] `home/common/default.nix`
+- [x] `home/common/shell.nix`: fish, starship, atuin, all aliases/abbreviations from spec §6
+- [x] `home/common/git.nix`: Shoumeiki identity, SSH signing, `init.defaultBranch = "main"`, `push.autoSetupRemote = true`
+- [x] `home/common/neovim.nix`: Neovim + LazyVim
+- [x] `home/common/direnv.nix`: direnv + nix-direnv
+- [x] `home/common/cli-tools.nix`: eza, bat, ripgrep, fd, fzf, zoxide, btop, tldr, dust, duf, procs, jq, yq, fastfetch
 
 ##### Desktop home
 
