@@ -7,8 +7,9 @@ _: {
   # centered slider instead of silently changing the level. Without it,
   # the only feedback is the audio itself getting louder/quieter.
   #
-  # The NixOS module sets up the system service that watches for input
-  # events and renders the OSD layer-shell window.
+  # home-manager's `services.swayosd` runs the swayosd-server as a user
+  # systemd unit on the Wayland session and installs the swayosd-client
+  # binary used by the Hyprland keybinds.
   # ---------------------------------------------------------------------------
 
   services.swayosd.enable = true;

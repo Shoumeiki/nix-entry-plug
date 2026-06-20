@@ -35,7 +35,6 @@
     ../../modules/desktop/hyprland.nix
     ../../modules/desktop/nix-ld.nix
     ../../modules/desktop/stylix.nix
-    ../../modules/desktop/swayosd.nix
     ../../modules/desktop/thunar.nix
     ../../modules/desktop/xdg-portal.nix
 

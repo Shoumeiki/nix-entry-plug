@@ -16,6 +16,7 @@ _: {
     ./hyprshade.nix
     ./mako.nix
     ./rofi.nix
+    ./swayosd.nix
     ./terminals.nix
     ./waybar.nix
   ];

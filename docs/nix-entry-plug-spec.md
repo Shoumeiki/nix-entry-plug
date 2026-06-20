@@ -386,7 +386,6 @@ nix-entry-plug/
 │   │   ├── hyprland.nix       # Hyprland system-level
 │   │   ├── nix-ld.nix
 │   │   ├── stylix.nix         # Stylix system-level (incl. console target)
-│   │   ├── swayosd.nix        # Volume / brightness / caps-lock OSD
 │   │   ├── thunar.nix         # Thunar + plugins + gvfs/tumbler
 │   │   └── xdg-portal.nix     # XDG portals (hyprland + gtk)
 │   ├── gaming/
@@ -418,6 +417,7 @@ nix-entry-plug/
 │   │   ├── hyprshade.nix      # Blue light filter schedule (user systemd timer)
 │   │   ├── mako.nix
 │   │   ├── rofi.nix
+│   │   ├── swayosd.nix        # Volume / brightness / caps-lock OSD (HM service)
 │   │   ├── terminals.nix      # foot + kitty
 │   │   └── waybar.nix         # Per-output bars: full on DP-1, minimal on HDMI-A-1
 │   └── ellen.nix
