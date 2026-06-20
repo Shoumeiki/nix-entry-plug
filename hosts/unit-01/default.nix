@@ -37,6 +37,12 @@
     ../../modules/desktop/xdg-portal.nix
   ];
 
+  # Per-user home-manager config. Flake's home-manager NixOS module is
+  # imported in flake.nix; this is where the host says "and ellen's home
+  # lives at <path>". Future hosts with different users wire up their own
+  # users here without touching anything in `modules/`.
+  home-manager.users.ellen = import ../../home/ellen.nix;
+
   networking.hostName = "unit-01";
 
   # Disko target. `/dev/nvme0n1` is the expected enumeration name for
