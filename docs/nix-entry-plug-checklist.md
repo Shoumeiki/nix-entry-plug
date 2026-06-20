@@ -121,8 +121,8 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 **Validate:**
 
-- [ ] `just check` clean
-- [ ] `just build` succeeds
+- [x] `just check` clean
+- [x] `just build` succeeds
 
 **Done when:** Hardware and Nix-tooling modules are written and the closure builds.
 

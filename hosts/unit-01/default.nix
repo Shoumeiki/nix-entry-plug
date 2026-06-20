@@ -30,7 +30,11 @@
     # Desktop prerequisites. The actual compositor (Hyprland), greeter,
     # and theming arrive in Phase 4.
     ../../modules/desktop/dconf.nix
+    ../../modules/desktop/greetd.nix
+    ../../modules/desktop/hyprland.nix
     ../../modules/desktop/nix-ld.nix
+    ../../modules/desktop/stylix.nix
+    ../../modules/desktop/xdg-portal.nix
   ];
 
   networking.hostName = "unit-01";
