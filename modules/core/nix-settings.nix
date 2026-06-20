@@ -39,6 +39,7 @@
       "steam-unwrapped"
       "steam-original"
       "steam-run"
+      "proton-ge-bin"
       # Communication
       "discord"
       # Notes
