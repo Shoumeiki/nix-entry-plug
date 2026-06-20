@@ -2,11 +2,16 @@ _: {
   # ---------------------------------------------------------------------------
   # Per-user home-manager entrypoint for ellen.
   #
-  # Imports common (host-agnostic) config now; the desktop layer is added
-  # in batch 2 of Phase 5 once the home-manager wiring is proven to work.
+  # `./common` is host-agnostic (shell, git, cli tools, neovim, direnv).
+  # `./desktop` adds Hyprland + waybar + rofi + terminals + the rest of the
+  # graphical session; safe to drop from any future headless host's
+  # entrypoint.
   # ---------------------------------------------------------------------------
 
-  imports = [ ./common ];
+  imports = [
+    ./common
+    ./desktop
+  ];
 
   home = {
     username = "ellen";
