@@ -4,12 +4,8 @@ _: {
   #
   # Identity: github.com/Shoumeiki. Commit signing uses SSH (not GPG) —
   # same key as auth, no separate keyring to manage. The key itself is
-  # generated imperatively post-install (Phase 6 pre-install) since it
-  # shouldn't live in the public flake.
-  #
-  # programs.git.settings replaces the older split userName / userEmail /
-  # signing / extraConfig options and maps 1:1 onto git's own config keys.
-  # programs.ssh.settings is the corresponding flat-OpenSSH-directive schema.
+  # generated imperatively post-install since it shouldn't live in the
+  # public flake.
   # ---------------------------------------------------------------------------
 
   programs.git = {
@@ -22,9 +18,9 @@ _: {
         signingkey = "~/.ssh/id_ed25519.pub";
       };
 
-      # SSH-based signing (not GPG). `commit.gpgsign` / `tag.gpgsign` are
-      # the canonical git keys — naming is a historical artefact, they
-      # govern signing for any configured `gpg.format`.
+      # SSH-based signing (not GPG). The `gpgsign` keys govern signing for
+      # any configured `gpg.format` — the naming is a git historical
+      # artefact, the behaviour applies to ssh signatures too.
       gpg.format = "ssh";
       commit.gpgsign = true;
       tag.gpgsign = true;
@@ -42,9 +38,9 @@ _: {
   programs.ssh = {
     enable = true;
 
-    # HM-supplied defaults are being phased out; opt out and declare the
-    # ones we actually want explicitly. Keeps future HM upgrades from
-    # silently changing client behaviour.
+    # Opt out of the home-manager-supplied default block so future HM
+    # upgrades can't silently change client behaviour. The settings we
+    # actually want are declared explicitly below.
     enableDefaultConfig = false;
 
     settings."*" = {

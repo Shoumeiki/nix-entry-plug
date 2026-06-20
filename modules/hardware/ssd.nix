@@ -1,11 +1,21 @@
 _: {
   # ---------------------------------------------------------------------------
-  # SSD maintenance.
+  # SSD / NVMe maintenance.
   #
-  # `fstrim.timer` runs weekly and TRIMs all mounted filesystems that
-  # support discard. Preferred over `discard` mount option (continuous
-  # trim) for write performance.
+  #   fstrim — weekly TRIM of every discard-capable mounted filesystem.
+  #            Preferred over the `discard` mount option (continuous trim)
+  #            for write performance.
+  #   smartd — daemon that monitors SMART attributes and shouts in the
+  #            log (and via wall) when a drive looks like it's failing.
   # ---------------------------------------------------------------------------
 
-  services.fstrim.enable = true;
+  services = {
+    fstrim.enable = true;
+
+    smartd = {
+      enable = true;
+      autodetect = true;
+      notifications.wall.enable = true;
+    };
+  };
 }

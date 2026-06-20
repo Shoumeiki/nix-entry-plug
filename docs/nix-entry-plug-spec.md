@@ -78,6 +78,7 @@ This document is the design and reference half of the migration. The actionable,
 | --- | --- |
 | Bootloader (primary) | Limine (`boot.loader.limine.enable = true`) |
 | Bootloader (fallback) | systemd-boot, available as a specialisation |
+| Boot splash | Plymouth + `quiet splash` kernel params (themed by Stylix) |
 | Encryption | None, sops-nix handles secrets at the config layer |
 | Disk tool | Disko (declarative partitioning) |
 | Filesystem | BTRFS with subvolumes |
@@ -115,8 +116,10 @@ The `@persist` subvolume is created from day one even though Impermanence isn't 
 | AMD microcode | `hardware.cpu.amd.updateMicrocode = true` |
 | GPU driver | AMDGPU (open source, in-kernel) |
 | Graphics stack | `hardware.graphics.enable = true`, `hardware.graphics.enable32Bit = true` |
-| Firmware | `hardware.enableRedistributableFirmware = true` |
-| SSD maintenance | `services.fstrim.enable = true` |
+| CPU governor | `performance` (workstation, not laptop — idle power not a concern) |
+| Firmware (system) | `hardware.enableRedistributableFirmware = true` |
+| Firmware (LVFS) | `services.fwupd.enable = true` — `fwupdmgr update` for SSD / UEFI |
+| SSD maintenance | `services.fstrim.enable` + `services.smartd.enable` |
 | Networking | NetworkManager |
 | Firewall | `networking.firewall.enable = true` |
 | Bluetooth | BlueZ + blueman |
@@ -138,20 +141,25 @@ The `@persist` subvolume is created from day one even though Impermanence isn't 
 | --- | --- |
 | Compositor | Hyprland (Wayland) |
 | Login manager | greetd + ReGreet (`programs.regreet.enable = true`, themed via Stylix) |
-| Status bar | waybar _(placeholder, Quickshell later)_ |
-| Launcher | rofi _(placeholder, Quickshell later)_ |
-| Notifications | mako _(placeholder, Quickshell later)_ |
+| Status bar | waybar (per-output config: full bar on DP-1, minimal on HDMI-A-1) |
+| Launcher | rofi |
+| Notifications | mako |
+| OSD (volume / brightness) | swayosd |
 | Lock screen | hyprlock |
 | Idle manager | hypridle |
 | Wallpaper | hyprpaper (managed by Stylix) |
-| Clipboard | wl-clipboard + cliphist |
+| Clipboard | wl-clipboard + cliphist (HM `services.cliphist`) |
+| Polkit agent | hyprpolkitagent (HM `services.hyprpolkitagent`) |
 | Screenshots | grim + slurp |
 | Recording | gpu-screen-recorder |
 | Blue light filter | hyprshade |
+| Boot splash | Plymouth (themed by Stylix) |
 | Shell toolkit | Quickshell _(future, ref: celesrenata/end-4-flakes, end-4/dots-hyprland)_ |
 | XDG portals | xdg-desktop-portal-hyprland + xdg-desktop-portal-gtk |
 
-**KVM switch handling:** No EDID emulation on the KVM, so monitors disappear when input switches and Hyprland reshuffles workspaces. Workaround: create a headless output at startup with `hyprctl output create headless` and bind a fallback workspace to it. When real outputs drop, workspaces fall back to the headless output instead of being redistributed. Configured in the Hyprland exec-once block.
+**KVM switch handling:** No EDID emulation on the KVM, so monitors disappear when input switches and Hyprland reshuffles workspaces. Workaround: create a headless output at startup with `hyprctl output create headless` and bind a fallback workspace (10) to it. When real outputs drop, workspaces fall back to the headless output instead of being redistributed. Configured in the Hyprland exec-once block.
+
+**Passthrough submap (`Super+Esc`):** All Hyprland keybinds are disabled until the same chord is pressed again. Use when a guest VM, RDP/VNC client, or nested compositor needs the modifiers Hyprland is otherwise eating.
 
 #### Theming (Stylix)
 
@@ -170,7 +178,7 @@ Stylix provides unified system-wide theming. `autoEnable = true` (default) appli
 | Icon theme | Papirus (`pkgs.papirus-icon-theme`) |
 | Wallpaper | TBD |
 
-**Note:** Confirm ReGreet appears in the current Stylix targets list before assuming it themes automatically. If not, theme it manually via `programs.regreet.settings`.
+**Cursor consistency:** `home.pointerCursor.hyprcursor.enable = true; gtk.enable = true; x11.enable = true;` is set in `home/desktop/cursor.nix` so the Bibata cursor renders identically across Hyprland-native, GTK, and XWayland surfaces.
 
 #### Applications
 
@@ -348,7 +356,7 @@ nix-entry-plug/
 ├── .sops.yaml                 # sops-nix config (added in Phase 7)
 ├── .envrc                     # direnv: `use flake`
 ├── justfile                   # Common commands (switch, update, check, fmt)
-├── treefmt.nix                # Formatter config (nixfmt-rfc-style + others)
+├── treefmt.nix                # Formatter config (nixfmt)
 │
 ├── hosts/
 │   └── unit-01/
@@ -359,26 +367,28 @@ nix-entry-plug/
 │
 ├── modules/
 │   ├── core/
-│   │   ├── boot.nix           # Limine + hibernation + kernel
+│   │   ├── boot.nix           # Limine + hibernation + zen kernel + Plymouth
 │   │   ├── nix-settings.nix   # Flakes, GC, substituters, allowUnfreePredicate
 │   │   ├── locale.nix         # Locale, timezone, console
 │   │   ├── networking.nix     # NetworkManager, firewall, hostname
 │   │   ├── users.nix          # User accounts (initialHashedPassword first)
 │   │   └── nix-tooling.nix    # nh, nom, nvd, nix-index, comma
 │   ├── hardware/
-│   │   ├── amd.nix            # CPU microcode, AMDGPU, graphics stack, firmware
+│   │   ├── amd.nix            # CPU microcode, AMDGPU, performance governor, lm_sensors
 │   │   ├── audio.nix          # PipeWire + WirePlumber + rtkit
 │   │   ├── bluetooth.nix      # BlueZ + blueman
-│   │   └── ssd.nix            # fstrim
+│   │   ├── firmware.nix       # fwupd (LVFS-driven firmware updates)
+│   │   └── ssd.nix            # fstrim + smartd
 │   ├── desktop/
 │   │   ├── dconf.nix
 │   │   ├── gpu-screen-recorder.nix # gpu-screen-recorder + GTK GUI (setcap wrapper)
 │   │   ├── greetd.nix         # greetd + ReGreet
 │   │   ├── hyprland.nix       # Hyprland system-level
 │   │   ├── nix-ld.nix
-│   │   ├── stylix.nix         # Stylix system-level
+│   │   ├── stylix.nix         # Stylix system-level (incl. console target)
+│   │   ├── swayosd.nix        # Volume / brightness / caps-lock OSD
 │   │   ├── thunar.nix         # Thunar + plugins + gvfs/tumbler
-│   │   └── xdg-portal.nix     # XDG portals
+│   │   └── xdg-portal.nix     # XDG portals (hyprland + gtk)
 │   ├── gaming/
 │   │   └── steam.nix          # Steam, Proton, gamemode, gamescope, MangoHud
 │   ├── virtualisation/
@@ -399,16 +409,17 @@ nix-entry-plug/
 │   │   └── cli-tools.nix      # eza, bat, ripgrep, fd, fzf, zoxide, btop, etc.
 │   ├── desktop/
 │   │   ├── default.nix
-│   │   ├── hyprland.nix       # Monitors, keybinds, KVM headless workaround
-│   │   ├── waybar.nix
-│   │   ├── rofi.nix
-│   │   ├── mako.nix
-│   │   ├── hyprshade.nix      # Blue light filter schedule
-│   │   ├── terminals.nix      # foot + kitty
-│   │   ├── audio.nix          # PipeWire default sink/source
+│   │   ├── apps.nix           # yazi, mpv, zathura, mpd, Zed, Signal, Vesktop, audacity, krita, etc.
+│   │   ├── audio.nix          # pavucontrol + easyeffects
 │   │   ├── browsers.nix       # Zen + Helium
-│   │   ├── fun.nix            # cava, fastfetch
-│   │   └── apps.nix           # Thunar, yazi, Signal, Vesktop, virt-manager (recording via modules/desktop/gpu-screen-recorder.nix)
+│   │   ├── cursor.nix         # hyprcursor + GTK + X11 cursor consistency
+│   │   ├── fun.nix            # cava, fastfetch on shell start
+│   │   ├── hyprland.nix       # Monitors, keybinds, KVM headless workaround, passthrough submap
+│   │   ├── hyprshade.nix      # Blue light filter schedule (user systemd timer)
+│   │   ├── mako.nix
+│   │   ├── rofi.nix
+│   │   ├── terminals.nix      # foot + kitty
+│   │   └── waybar.nix         # Per-output bars: full on DP-1, minimal on HDMI-A-1
 │   └── ellen.nix
 │
 ├── overlays/                  # Custom package overlays (use as needed)
@@ -424,7 +435,7 @@ nix-entry-plug/
     └── recovery.md            # "Rebuild fails, now what" guide
 ```
 
-**Stylix placement note:** The NixOS module (`modules/desktop/stylix.nix`) sets the base config. Stylix auto-applies to home-manager targets when its home-manager module is imported in `flake.nix`.
+**Stylix placement note:** The NixOS module (`modules/desktop/stylix.nix`) imports `inputs.stylix.nixosModules.stylix` and holds the base config. Combined with `home-manager.useGlobalPkgs = true` in `flake.nix`, Stylix auto-themes every supported home-manager target without per-target plumbing.
 
 ---
 

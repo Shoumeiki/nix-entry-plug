@@ -8,9 +8,9 @@
   # home-manager NOT to install a second copy — we drive the system one
   # with this config.
   #
-  # Stylix manages colours, borders, and the lock/idle/wallpaper
-  # appearance via stylix.targets.hyprland / hyprlock / hyprpaper, so
-  # nothing in this file sets a hex value.
+  # Stylix manages colours, borders, and the lock/idle/wallpaper appearance
+  # via stylix.targets.hyprland / hyprlock / hyprpaper, so nothing in this
+  # file sets a hex value.
   # ---------------------------------------------------------------------------
 
   wayland.windowManager.hyprland = {
@@ -24,6 +24,7 @@
       "$terminal" = "foot";
       "$fileManager" = "thunar";
       "$menu" = "rofi -show drun";
+      "$browser" = "zen";
 
       # ---- Monitors --------------------------------------------------------
       # Connectors as enumerated on unit-01: DP-1 = Gigabyte M32U (left),
@@ -56,18 +57,13 @@
       ];
 
       # ---- Autostart -------------------------------------------------------
+      # cliphist, hyprpaper, hypridle, hyprpolkitagent all run as user
+      # systemd services declared elsewhere in this file. exec-once is
+      # reserved for things that genuinely need to fire from Hyprland.
       exec-once = [
         # KVM fallback output. Created at startup so workspace 10 has
-        # somewhere to live even when DP-1 / DP-2 are present.
+        # somewhere to live even when DP-1 / HDMI-A-1 are present.
         "hyprctl output create headless"
-
-        # Clipboard history daemon. cliphist stores everything wl-paste
-        # sees; the Super+Shift+V keybind below pipes it into rofi.
-        "wl-paste --type text  --watch cliphist store"
-        "wl-paste --type image --watch cliphist store"
-
-        # Polkit agent for GUI sudo prompts.
-        "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent"
       ];
 
       # ---- Input -----------------------------------------------------------
@@ -80,6 +76,14 @@
           natural_scroll = true;
           tap-to-click = true;
         };
+      };
+
+      # ---- Cursor ----------------------------------------------------------
+      cursor = {
+        # Hide the cursor after a few seconds of no movement. Stops the
+        # arrow squatting in the middle of a 4K video.
+        inactive_timeout = 4;
+        no_warps = true;
       };
 
       # ---- Look / behaviour -----------------------------------------------
@@ -121,7 +125,26 @@
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
         vfr = true;
+        # Hide the terminal that launched a GUI app until the app exits.
+        # Big QoL on a tiling WM.
+        enable_swallow = true;
+        swallow_regex = "^(foot|kitty)$";
+        # Background activations (notification clicks, electron deep
+        # links) actually raise + focus. The second option un-fullscreens
+        # the current window so the new one isn't hidden under it.
+        focus_on_activate = true;
+        new_window_takes_over_fullscreen = 2;
       };
+
+      # Let bar / notifications / launcher participate in Hyprland's blur.
+      layerrule = [
+        "blur, waybar"
+        "ignorezero, waybar"
+        "blur, notifications"
+        "ignorezero, notifications"
+        "blur, rofi"
+        "ignorezero, rofi"
+      ];
 
       # Per-game tearing opt-in (general.allow_tearing only enables the
       # capability; immediate is what actually requests it).
@@ -132,17 +155,18 @@
         "float, class:^(blueman-manager)$"
         "float, class:^(nm-connection-editor)$"
         "float, class:^(\\.?(file-roller|nautilus))$"
+        # Picture-in-Picture: float + pin so it stays visible while
+        # workspace-hopping.
         "float, title:^(Picture-in-Picture)$"
-        # Idle inhibit while playing video.
-        "idleinhibit fullscreen, class:^(mpv|firefox|zen|chrome|chromium)$"
+        "pin,   title:^(Picture-in-Picture)$"
+        # Keep the display awake while any window is fullscreen
+        # (covers mpv, browsers, games, gamescope, OBS preview, ...).
+        "idleinhibit fullscreen, class:.*"
       ];
 
       # ---- Keybinds --------------------------------------------------------
       bind =
         let
-          # 1..9 workspace switching + window-move. Workspace 10 is
-          # special (headless fallback); driven by the explicit binds
-          # at the bottom.
           ws = map toString (lib.range 1 9);
           workspaceBinds = lib.concatMap (n: [
             "$mainMod, ${n}, workspace, ${n}"
@@ -154,7 +178,7 @@
           "$mainMod, Return, exec, $terminal"
           "$mainMod, D, exec, $menu"
           "$mainMod, E, exec, $fileManager"
-          "$mainMod, B, exec, zen"
+          "$mainMod, B, exec, $browser"
 
           # Window management
           "$mainMod, Q, killactive"
@@ -193,6 +217,11 @@
 
           # Clipboard history
           "$mainMod SHIFT, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+
+          # Passthrough mode: disable every Hyprland keybind until toggled
+          # off again. Essential for KVM / nested compositors / remote
+          # desktop where the guest needs the modifiers Hyprland is eating.
+          "$mainMod, escape, submap, passthrough"
         ]
         ++ workspaceBinds;
 
@@ -202,33 +231,38 @@
         "$mainMod, mouse:273, resizewindow" # right click + drag
       ];
 
-      # Repeating binds (held key fires repeatedly).
+      # Repeating binds (held key fires repeatedly). Volume/brightness
+      # are routed through swayosd-client for an on-screen indicator.
       binde = [
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioRaiseVolume, exec, ${lib.getExe' pkgs.swayosd "swayosd-client"} --output-volume raise"
+        ", XF86AudioLowerVolume, exec, ${lib.getExe' pkgs.swayosd "swayosd-client"} --output-volume lower"
       ];
 
       # Lock-safe binds (continue working while session is locked).
       bindl = [
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86AudioMute, exec, ${lib.getExe' pkgs.swayosd "swayosd-client"} --output-volume mute-toggle"
+        ", XF86AudioMicMute, exec, ${lib.getExe' pkgs.swayosd "swayosd-client"} --input-volume mute-toggle"
         ", XF86AudioPlay, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
       ];
     };
+
+    # Submaps can't be expressed in the settings tree (they're a
+    # statement, not a key-value pair). Declared in raw config so the
+    # main binding list stays clean.
+    extraConfig = ''
+      submap = passthrough
+      bind = SUPER, escape, submap, reset
+      submap = reset
+    '';
   };
 
   # ---------------------------------------------------------------------------
-  # Lock / idle / wallpaper.
+  # Lock / idle / wallpaper / clipboard / polkit — user systemd services.
   # ---------------------------------------------------------------------------
 
-  programs.hyprlock = {
-    enable = true;
-    # Visuals are Stylix-managed; leave settings empty so we inherit the
-    # generated config. Tweak `settings` here when a real customisation
-    # is needed.
-  };
+  programs.hyprlock.enable = true;
 
   services.hypridle = {
     enable = true;
@@ -261,15 +295,22 @@
 
   services.hyprpaper.enable = true;
 
-  # ---------------------------------------------------------------------------
-  # Tools the Hyprland config references on PATH.
-  # ---------------------------------------------------------------------------
+  # Clipboard history daemon — stores everything wl-paste sees so the
+  # Super+Shift+V keybind can pipe it through rofi.
+  services.cliphist = {
+    enable = true;
+    allowImages = true;
+  };
+
+  # Polkit agent for GUI sudo prompts.
+  services.hyprpolkitagent.enable = true;
+
+  # CLI tools the Hyprland keybinds call by bare name.
   home.packages = with pkgs; [
-    wl-clipboard # wl-copy / wl-paste
-    cliphist # clipboard history daemon
     grim # screenshot capture
     slurp # region select
-    playerctl # media keys
-    hyprpolkitagent # polkit agent (referenced in exec-once)
+    wl-clipboard # wl-copy / wl-paste
+    cliphist # clipboard history CLI (daemon is the systemd service above)
+    playerctl # media-key dispatch
   ];
 }

@@ -1,11 +1,14 @@
 { pkgs, ... }:
 {
+  # ---------------------------------------------------------------------------
+  # Nix formatter selection for treefmt.
+  # ---------------------------------------------------------------------------
+
   projectRootFile = "flake.nix";
 
-  # nixfmt (formerly `nixfmt-rfc-style`) — the RFC 166 / nixpkgs-official
-  # formatter. `pkgs.nixfmt-rfc-style` is now an alias of `pkgs.nixfmt`,
-  # so we pin the package explicitly to dodge the deprecation warning
-  # that treefmt-nix would otherwise surface.
+  # nixfmt is the RFC 166 / nixpkgs-official formatter. Pinning the
+  # package keeps treefmt from picking up an unexpected default if the
+  # alias situation changes upstream.
   programs.nixfmt = {
     enable = true;
     package = pkgs.nixfmt;

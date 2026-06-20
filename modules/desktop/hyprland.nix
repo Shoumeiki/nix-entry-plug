@@ -11,7 +11,7 @@ _: {
   #
   # XWayland is on by default. Per-user Hyprland config (keybinds,
   # monitors, animations, hyprpaper, hyprlock, hypridle) lives in
-  # home-manager (Phase 5).
+  # home-manager (home/desktop/hyprland.nix).
   # ---------------------------------------------------------------------------
 
   programs.hyprland.enable = true;

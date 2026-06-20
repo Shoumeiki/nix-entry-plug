@@ -98,7 +98,7 @@
     in
     {
       nixosConfigurations = {
-        # Primary desktop. Currently a stub — real modules land from Phase 2.
+        # Primary desktop.
         unit-01 = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = moduleArgs;
@@ -116,7 +116,7 @@
         };
       };
 
-      # `nix fmt` → treefmt wrapper (currently just nixfmt-rfc-style).
+      # `nix fmt` → treefmt wrapper.
       formatter.${system} = treefmtEval.config.build.wrapper;
 
       # `nix flake check` runs these.

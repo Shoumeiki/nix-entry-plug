@@ -5,10 +5,8 @@
   #
   # Membership of `libvirtd` group (granted to ellen in
   # modules/core/users.nix) is what makes virt-manager work without sudo.
-  # UEFI firmware (OVMF) now ships bundled with QEMU upstream, so the
-  # old `qemu.ovmf` submodule is gone — enabling libvirtd is enough.
   # swtpm provides virtual TPMs (needed for modern Windows guests,
-  # secureboot tests, etc.).
+  # secureboot tests, etc.). OVMF firmware ships bundled with QEMU.
   # ---------------------------------------------------------------------------
 
   virtualisation.libvirtd = {

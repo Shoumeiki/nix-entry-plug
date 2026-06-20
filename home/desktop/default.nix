@@ -7,9 +7,10 @@ _: {
   # ---------------------------------------------------------------------------
 
   imports = [
-    ./audio.nix
     ./apps.nix
+    ./audio.nix
     ./browsers.nix
+    ./cursor.nix
     ./fun.nix
     ./hyprland.nix
     ./hyprshade.nix

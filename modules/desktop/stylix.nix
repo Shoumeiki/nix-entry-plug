@@ -5,8 +5,8 @@
   #
   # autoEnable = true (default) lets Stylix theme every supported target it
   # finds — Hyprland, hyprpaper, hyprlock, waybar, mako, foot, kitty, GTK,
-  # Qt, ReGreet (if present), bat, fish, starship, etc. — without per-target
-  # plumbing. Disable individual targets via `stylix.targets.<name>.enable`
+  # Qt, ReGreet, bat, fish, starship, etc. — without per-target plumbing.
+  # Disable individual targets via `stylix.targets.<name>.enable = false`
   # if any one needs to opt out.
   # ---------------------------------------------------------------------------
 
@@ -50,6 +50,10 @@
       name = "Bibata-Modern-Classic";
       size = 24;
     };
+
+    # Theme the TTY palette too — useful when a graphical session fails
+    # and you're back on the bare console.
+    targets.console.enable = true;
   };
 
   # Stylix doesn't currently manage icon themes directly. Install Papirus

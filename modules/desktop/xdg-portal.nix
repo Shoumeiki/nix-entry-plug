@@ -15,10 +15,15 @@
   # `config.common.default` makes the Hyprland portal first-preference
   # with GTK as fallback for any interface it doesn't handle (notably
   # the file chooser).
+  #
+  # `xdgOpenUsePortal` routes `xdg-open` through the portal so default-app
+  # handling actually goes through xdg-mime. Fixes the "clicking a link
+  # in Discord opens the wrong browser" class of bugs.
   # ---------------------------------------------------------------------------
 
   xdg.portal = {
     enable = true;
+    xdgOpenUsePortal = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk

@@ -67,7 +67,7 @@
       };
 
       # Functions live here when an abbreviation isn't enough (multi-line
-      # logic, argument handling, etc.). Empty for now; add as patterns emerge.
+      # logic, argument handling, etc.).
       functions = { };
     };
 
@@ -80,12 +80,19 @@
 
     # Atuin: SQLite-backed shell history with optional sync.
     # `--disable-up-arrow` keeps fish's native up-arrow behaviour (history
-    # of *this* shell) and binds Ctrl-R to the atuin search instead, which
-    # matches muscle memory from bash/zsh users.
+    # of *this* shell) and binds Ctrl-R to the atuin search instead.
+    # `enter_accept = false` makes Enter on a selected result paste
+    # rather than run immediately — friendlier when results are close
+    # but not identical to what you want.
     atuin = {
       enable = true;
       enableFishIntegration = true;
       flags = [ "--disable-up-arrow" ];
+      settings = {
+        enter_accept = false;
+        filter_mode_shell_up_key_down = "session";
+        style = "compact";
+      };
       # Sync server config (atuin.sh or self-hosted) is set imperatively
       # post-install via `atuin login`. Keeps server URL / credentials
       # out of the public flake.

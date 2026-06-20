@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   # ---------------------------------------------------------------------------
   # AMD CPU + GPU support.
   #
@@ -22,4 +23,12 @@ _: {
       enable32Bit = true;
     };
   };
+
+  # Performance governor: this is a workstation, not a laptop. Idle power
+  # isn't a concern; consistent latency is.
+  powerManagement.cpuFreqGovernor = "performance";
+
+  # Userspace temperature / fan probes. waybar's custom/gpu-temp module
+  # parses `sensors amdgpu-pci-*`; useful at the CLI too.
+  environment.systemPackages = [ pkgs.lm_sensors ];
 }

@@ -7,12 +7,12 @@
   # Stylix theming, shell integration). Everything else is just a package
   # in home.packages.
   #
-  # System-level things live in modules/:
-  #   - Steam, gamescope, gamemode, MangoHud, Heroic, Prism → modules/gaming/steam.nix
-  #   - Thunar + plugins + gvfs/tumbler                     → modules/desktop/thunar.nix
-  #   - GPU Screen Recorder + GTK GUI (needs setcap wrapper) → modules/desktop/gpu-screen-recorder.nix
-  #   - Docker daemon                                        → modules/virtualisation/docker.nix
-  #   - libvirtd / virt-manager / QEMU                       → modules/virtualisation/libvirt.nix
+  # System-level apps that need root setup live in modules/:
+  #   Steam + gamescope + gamemode + MangoHud + Heroic + Prism → modules/gaming/steam.nix
+  #   Thunar + plugins + gvfs/tumbler                          → modules/desktop/thunar.nix
+  #   GPU Screen Recorder + GTK GUI (setcap wrapper)           → modules/desktop/gpu-screen-recorder.nix
+  #   Docker daemon                                             → modules/virtualisation/docker.nix
+  #   libvirtd + virt-manager + QEMU                            → modules/virtualisation/libvirt.nix
   # ---------------------------------------------------------------------------
 
   programs = {
@@ -57,7 +57,7 @@
 
     # ---- Creative --------------------------------------------------------
     krita # digital painting
-    audacity # audio editor (tenacity, the fork we'd prefer, has no maintained Nix flake; audacity is the upstream parent and ships without telemetry on nixpkgs)
+    audacity # audio editor
 
     # ---- Notes / docs ----------------------------------------------------
     obsidian # PKM (unfree — in allowUnfreePredicate)

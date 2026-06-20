@@ -26,6 +26,21 @@
     # Setting `resumeDevice` adds the corresponding `resume=` kernel param
     # automatically, but we set it explicitly for clarity / belt-and-braces.
     resumeDevice = "/dev/disk/by-label/swap";
-    kernelParams = [ "resume=/dev/disk/by-label/swap" ];
+
+    kernelParams = [
+      "resume=/dev/disk/by-label/swap"
+      # Suppress most kernel / udev noise during boot so Plymouth has a
+      # clean canvas. Errors still surface via journalctl.
+      "quiet"
+      "splash"
+      "udev.log_level=3"
+      "rd.systemd.show_status=auto"
+    ];
+
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+
+    # Splash screen. Stylix themes it via stylix.targets.plymouth.
+    plymouth.enable = true;
   };
 }

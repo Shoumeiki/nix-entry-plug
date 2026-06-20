@@ -27,7 +27,7 @@
     extraPackages = with pkgs; [
       # Nix
       nil # LSP
-      nixfmt # formatter (`pkgs.nixfmt-rfc-style` is now an alias of this)
+      nixfmt # formatter
       # Lua (for editing this very config)
       lua-language-server
       stylua

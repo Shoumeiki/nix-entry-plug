@@ -14,7 +14,7 @@ Personal NixOS + home-manager flake. Hyprland on Wayland, Stylix theming, sops-n
 - **Shell:** fish + starship + atuin, abundant abbreviations
 - **Editors:** Zed (GUI), Neovim (TUI)
 - **Tooling:** nh, nom, nvd, nix-index + comma, just, direnv + nix-direnv
-- **Quality:** nixfmt-rfc-style, statix, deadnix, treefmt-nix, pre-commit-hooks
+- **Quality:** nixfmt, statix, deadnix, treefmt-nix, pre-commit-hooks
 - **Secrets:** sops-nix (age)
 
 See [`docs/nix-entry-plug-spec.md`](./docs/nix-entry-plug-spec.md) for the full design and [`docs/nix-entry-plug-checklist.md`](./docs/nix-entry-plug-checklist.md) for the migration plan.

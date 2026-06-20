@@ -8,10 +8,9 @@ _: {
   #     (a single-app Wayland kiosk)
   #   - exposes `programs.regreet.settings` for ReGreet config
   #
-  # ReGreet should be themed automatically by Stylix's regreet target
-  # (autoEnable = true in stylix.nix). If theming doesn't apply on the
-  # first real boot, manually set `programs.regreet.settings.background`
-  # and friends here.
+  # ReGreet is themed by Stylix's regreet target (autoEnable in stylix.nix).
+  # If theming doesn't apply on the first real boot, set
+  # `programs.regreet.settings.background` and friends here.
   # ---------------------------------------------------------------------------
 
   programs.regreet.enable = true;

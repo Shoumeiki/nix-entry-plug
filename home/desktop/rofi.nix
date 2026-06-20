@@ -2,16 +2,13 @@ _: {
   # ---------------------------------------------------------------------------
   # rofi: app launcher / dmenu replacement.
   #
-  # `pkgs.rofi` is now the unified package (Wayland support was merged
-  # upstream; the old `rofi-wayland` fork is an alias / has been retired).
-  # Stylix themes via stylix.targets.rofi.
+  # Stylix themes the visuals via stylix.targets.rofi. Behaviour knobs live
+  # here.
   # ---------------------------------------------------------------------------
 
   programs.rofi = {
     enable = true;
 
-    # Common knobs. Most theming is Stylix-driven; these are functional
-    # behaviour, not visuals.
     extraConfig = {
       modi = "drun,run,window,filebrowser";
       show-icons = true;
