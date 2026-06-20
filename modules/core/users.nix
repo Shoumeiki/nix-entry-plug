@@ -20,6 +20,7 @@
       "video"
       "audio"
       "docker"
+      "libvirtd"
     ];
     # Hash generated with `mkpasswd -m sha-512`. Phase 7 replaces this
     # with a sops-managed hashedPasswordFile.

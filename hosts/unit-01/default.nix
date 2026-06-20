@@ -34,7 +34,15 @@
     ../../modules/desktop/hyprland.nix
     ../../modules/desktop/nix-ld.nix
     ../../modules/desktop/stylix.nix
+    ../../modules/desktop/thunar.nix
     ../../modules/desktop/xdg-portal.nix
+
+    # Gaming.
+    ../../modules/gaming/steam.nix
+
+    # Virtualisation.
+    ../../modules/virtualisation/docker.nix
+    ../../modules/virtualisation/libvirt.nix
   ];
 
   # Per-user home-manager config. Flake's home-manager NixOS module is

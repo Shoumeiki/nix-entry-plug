@@ -8,6 +8,8 @@ _: {
 
   imports = [
     ./audio.nix
+    ./apps.nix
+    ./browsers.nix
     ./fun.nix
     ./hyprland.nix
     ./hyprshade.nix

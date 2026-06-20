@@ -154,7 +154,7 @@
           "$mainMod, Return, exec, $terminal"
           "$mainMod, D, exec, $menu"
           "$mainMod, E, exec, $fileManager"
-          "$mainMod, B, exec, zen-browser"
+          "$mainMod, B, exec, zen"
 
           # Window management
           "$mainMod, Q, killactive"
