@@ -19,7 +19,16 @@ This document is the actionable, phase-by-phase plan. The design decisions, syst
 
 ### 1. Implementation Checklist
 
-**Testing principle:** Every phase that produces a buildable config ends with a VM test using `nixos-rebuild build-vm-with-bootloader` (or `build-vm` if Limine doesn't cooperate, then swap to the systemd-boot specialisation). Don't move on until the VM does what the phase says it should.
+**Testing principle:** Each phase ends with eval-time validation only — `nix flake check`, `statix`, `deadnix`, and `just build` (which builds the full system closure without activating it). Full boot validation is deferred to Phase 6 on real hardware, where the actual disk layout, swap, Limine, and GPU drivers all exist.
+
+VM testing via `nixos-rebuild build-vm` was attempted and abandoned: nested-TCG performance was too poor for an interactive boot, and the synthetic disk forced enough divergence from the real disko layout that the VM was no longer validating the production config. The safety net for the real install is:
+
+- **Limine's previous-generation menu** — every successful generation is selectable at boot
+- **`systemd-boot-fallback` specialisation** — selectable if Limine itself misbehaves
+- **NixOS minimal installer USB** — boot, mount the disko'd disk, `nixos-rebuild switch --flake` to recover
+- **`just build` before activation** — catches every eval and build error before the system changes
+
+If `just build` succeeds and `just check` is clean, the config is as validated as it can be off-target.
 
 #### Phase 0: Pre-migration
 
@@ -47,15 +56,15 @@ Set up the repo to be clean from day one.
   - statix
   - deadnix
 - [x] `.envrc` containing `use flake`
-- [x] `justfile` with: `switch`, `test`, `check`, `fmt`, `update`, `vm`, `gc`
+- [x] `justfile` with: `switch`, `boot`, `test`, `dry`, `check`, `build`, `fmt`, `update`, `gc`, `diff`
 - [x] Run `nix flake check`
 - [x] Run `just fmt` and confirm clean
 
 **Done when:** `nix flake check` passes, formatters and linters work, direnv activates on `cd` into the repo.
 
-#### Phase 2: Minimal bootable system (VM test)
+#### Phase 2: Minimal bootable system
 
-Goal: a config that boots in a VM to a TTY login with networking.
+Goal: a config that evaluates and builds for a TTY login with networking.
 
 - [x] `hosts/unit-01/disko.nix`: ESP, swap (labelled `swap`), BTRFS with @, @home, @nix, @log, @snapshots, @persist
 - [x] `hosts/unit-01/hardware.nix`: stub, refine with `nixos-generate-config` output during real install
@@ -78,22 +87,19 @@ Goal: a config that boots in a VM to a TTY login with networking.
   - Binary cache config
   - `nixpkgs.config.allowUnfreePredicate` with starter allow-list
 - [x] `modules/core/locale.nix`: en_AU.UTF-8, Australia/Melbourne
-- [x] `modules/core/networking.nix`: NetworkManager, hostname `unit-01`, firewall on, SSH allowed
+- [x] `modules/core/networking.nix`: NetworkManager, firewall on, SSH allowed (hostname set per-host in `hosts/unit-01/default.nix`)
 - [x] `modules/core/users.nix`: user `ellen`, wheel, fish, `initialHashedPassword`
 - [x] `modules/options/nerv.nix`: skeleton custom options module (define a placeholder option to validate the pattern)
 - [x] `hosts/unit-01/default.nix`: imports all of the above
-- [ ] `just vm`
 
-**VM test:**
-- [ ] Boots to login prompt
-- [ ] Can log in as `ellen`
-- [ ] Networking works (`ping 1.1.1.1`)
-- [ ] systemd-boot-fallback specialisation appears as a separate boot menu entry
-- [ ] Both boot entries work
+**Validate:**
 
-**Done when:** VM boots, networking works, fallback specialisation is selectable.
+- [ ] `just check` — flake check + statix + deadnix all clean
+- [ ] `just build` — full system closure builds successfully
 
-#### Phase 3: Hardware support and Nix tooling (VM test)
+**Done when:** Config evaluates and builds. Boot / login / networking validation is deferred to Phase 6.
+
+#### Phase 3: Hardware support and Nix tooling
 
 - [ ] `modules/hardware/amd.nix`:
   - `hardware.cpu.amd.updateMicrocode = true`
@@ -112,17 +118,15 @@ Goal: a config that boots in a VM to a TTY login with networking.
   - `programs.nix-index.enable = true`
   - `programs.command-not-found.enable = false`
   - comma package
-- [ ] `just vm`
 
-**VM test:**
-- [ ] Still boots
-- [ ] `nh`, `nom`, `nvd` available
-- [ ] `, hello` runs hello without it being installed
-- [ ] No errors in `journalctl`
+**Validate:**
 
-**Done when:** Hardware modules and Nix tooling work, VM still boots cleanly.
+- [ ] `just check` clean
+- [ ] `just build` succeeds
 
-#### Phase 4: Desktop core + Stylix (VM test)
+**Done when:** Hardware and Nix-tooling modules are written and the closure builds.
+
+#### Phase 4: Desktop core + Stylix
 
 - [ ] `modules/desktop/stylix.nix`:
   - `stylix.enable = true`
@@ -135,16 +139,15 @@ Goal: a config that boots in a VM to a TTY login with networking.
 - [ ] `modules/desktop/hyprland.nix`: Hyprland enabled, Wayland session, XWayland
 - [ ] `modules/desktop/xdg-portal.nix`: hyprland + gtk portals
 - [ ] `modules/desktop/greetd.nix`: greetd + ReGreet
-- [ ] `just vm`
 
-**VM test:**
-- [ ] Reach ReGreet login screen
-- [ ] Hyprland session launches
-- [ ] Stylix colours visible on greeter and Hyprland
+**Validate:**
 
-**Done when:** ReGreet logs you into Hyprland in the VM with theming applied.
+- [ ] `just check` clean
+- [ ] `just build` succeeds (this will pull a lot — Hyprland, fonts, theming)
 
-#### Phase 5: home-manager, applications, shell aliases (VM test)
+**Done when:** Desktop modules build into the closure.
+
+#### Phase 5: home-manager, applications, shell aliases
 
 ##### Common home
 
@@ -184,61 +187,83 @@ Goal: a config that boots in a VM to a TTY login with networking.
   - `programs.steam.enable = true`
   - `programs.steam.gamescopeSession.enable = true`
   - gamemode, MangoHud, Heroic, PrismLauncher
-- [ ] `just vm`
 
-**VM test:**
-- [ ] Hyprland session with bar, launcher, notifications, consistent Stylix theming
-- [ ] Foot or kitty opens
-- [ ] Aliases work (`ls`, `, cowsay`, `rebuild --dry`)
-- [ ] fastfetch displays on new shell
-- [ ] direnv activates on `cd` into a project
+**Validate:**
 
-**Done when:** Desktop is usable in the VM and shell environment behaves as expected.
+- [ ] `just check` clean
+- [ ] `just build` succeeds (largest build of the project; expect significant download)
+
+**Done when:** Full closure including home-manager and all applications builds.
 
 #### Phase 6: First real install on unit-01
 
+This is where boot / login / networking / desktop / hardware are all validated for the first time.
+
 ##### Pre-install
 
-- [ ] Generate SSH key: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
+- [ ] Generate SSH key on the existing Arch system: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
 - [ ] Add public key to GitHub
+- [ ] Confirm the repo's `just build` succeeds on the existing Arch system (it has Nix via `nix-installer` or equivalent — final eval check before pulling the plug)
+- [ ] Identify the real disk's `by-id` path: `ls -l /dev/disk/by-id/` and pick the NVMe entry. Update `nerv.disk.device` in `hosts/unit-01/default.nix`, commit, push.
 - [ ] Write `docs/install-guide.md`:
   - Download NixOS minimal ISO, write to USB
   - Boot, connect to network (ethernet)
+  - Set a temporary password for the installer user (`passwd`) so you can `ssh` in from a second machine if needed
   - Clone `nix-entry-plug`
-  - Run Disko to partition
-  - `nixos-install --flake .#unit-01`
+  - `sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko -- --mode disko --flake .#unit-01`
+  - `sudo nixos-install --flake .#unit-01`
   - Reboot
 - [ ] Write `docs/recovery.md`: "rebuild fails, now what":
   - Boot previous generation from Limine menu
-  - Boot systemd-boot-fallback specialisation
-  - When to boot from USB
-  - How to roll back a single bad commit
+  - Boot `systemd-boot-fallback` specialisation
+  - Boot from NixOS USB, `mount /dev/disk/by-label/nixos -o subvol=@ /mnt`, `nixos-enter`, `nixos-rebuild switch --flake /etc/nixos#unit-01`
+  - `git revert <bad-commit>` and rebuild
+- [ ] Have a second machine (laptop, phone tethered) available with the recovery doc open
+- [ ] Confirm a NixOS minimal installer USB is written, bootable, and on the desk
+- [ ] Back up anything from the Arch install that isn't already in the repo (browser profiles, SSH keys, GPG keys, anything in `~/.local/share` you care about)
 
 ##### Install
 
 - [ ] Boot from NixOS minimal USB
-- [ ] Follow install guide
+- [ ] Follow `install-guide.md`
 
-##### Post-install validation
+##### Post-install boot validation
 
-- [ ] Boots via Limine to ReGreet
+This is the first time the system actually runs end-to-end.
+
+- [ ] Limine appears at boot
+- [ ] Default entry boots to a usable system
+- [ ] `systemd-boot-fallback` specialisation entry appears in Limine
+- [ ] `systemd-boot-fallback` boots successfully (test once, then prefer the default)
+- [ ] Login as `ellen` works
+- [ ] `hostname` returns `unit-01`
+- [ ] `ping -c 3 1.1.1.1` succeeds (ethernet)
+- [ ] `groups` shows `wheel networkmanager video audio docker`
+- [ ] `sudo` works
+- [ ] `swapon --show` lists the labelled swap partition
+- [ ] `journalctl -p err -b` is empty or only contains expected entries
+
+##### Post-install desktop validation
+
+- [ ] Reach ReGreet login screen
 - [ ] Hyprland session launches
 - [ ] Monitor 1 (Gigabyte M32U): 3840x2160 @ 144Hz, left
 - [ ] Monitor 2 (BenQ RD280UA): 3840x2560 @ 60Hz, right
 - [ ] KVM test: switch input and back, workspaces stay sane (headless fallback works)
-- [ ] Stylix theming consistent
-- [ ] Audio: UMC22 headphones, motherboard speakers, switchable
-- [ ] Bluetooth toggles via blueman
-- [ ] Internet works
-- [ ] Keybinds functional
-- [ ] Apps launch
+- [ ] Stylix theming consistent across greeter, terminal, waybar, rofi, mako, GTK apps
+- [ ] Audio: UMC22 headphones, motherboard speakers, switchable in `pavucontrol` or equivalent
+- [ ] Bluetooth toggles via blueman, can pair a device
+- [ ] Keybinds functional (launcher, terminal, screenshot, clipboard history)
+- [ ] Apps launch (Zen, Zed, Thunar, yazi, Signal, Vesktop, mpv)
 - [ ] Screen sharing works in Vesktop
-- [ ] Gaming: Steam Proton game runs, gamemode + MangoHud work
+- [ ] Gaming: Steam launches, Proton game runs, gamemode + MangoHud overlay visible
 - [ ] gamescope session selectable at login
-- [ ] Hibernation: `systemctl hibernate` + clean resume
+- [ ] Hibernation: `systemctl hibernate` + clean resume to logged-in session
+- [ ] direnv activates on `cd` into the `nix-entry-plug` repo
+- [ ] fastfetch displays on new shell
+- [ ] Aliases work (`ls`, `, cowsay`, alias from spec §6)
 - [ ] Git: signed commit + push via SSH works
-- [ ] systemd-boot-fallback specialisation present and bootable
-- [ ] Commit working config, push to GitHub, mirror to Forgejo
+- [ ] Commit any post-install tweaks, push to GitHub
 
 **Done when:** You're reading this document from unit-01 on NixOS.
 
@@ -254,7 +279,7 @@ Swap from `initialHashedPassword` to sops-managed.
   - `users.ellen.hashedPassword`
 - [ ] `modules/secrets/sops.nix`: sops-nix configuration and secret definitions
 - [ ] Update `modules/core/users.nix` to use `hashedPasswordFile`
-- [ ] Rebuild, reboot, confirm login still works
+- [ ] `just build`, then `just switch`, then reboot, confirm login still works
 - [ ] Commit (encrypted secrets are safe to commit)
 
 **Done when:** Password is sops-managed and login still works after reboot.
@@ -262,7 +287,7 @@ Swap from `initialHashedPassword` to sops-managed.
 #### Phase 8: Mullvad VPN (optional)
 
 - [ ] `services.mullvad-vpn.enable = true`
-- [ ] Rebuild
+- [ ] `just switch`
 - [ ] `mullvad account login <account-number>`
 - [ ] Confirm tunnel works
 
@@ -343,7 +368,7 @@ Shared modules in `modules/` already structured to support this. Each host gets 
 
 #### Code quality additions
 
-- [ ] nixosTests for any module that runs a service. Spin up a throwaway VM with assertions: service starts, port open, config sane.
+- [ ] nixosTests for any module that runs a service. Spin up a throwaway VM with assertions: service starts, port open, config sane. (Worth revisiting once the install is real and we have a working baseline to compare against — the eval-only validation path we're using now means a regression in a service module wouldn't be caught until activation.)
 
 #### Binary cache for personal builds
 

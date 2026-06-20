@@ -30,7 +30,7 @@
         };
 
         swap = {
-          size = "8G";
+          size = "32G";
           content = {
             type = "swap";
             # `mkswap -L swap` so /dev/disk/by-label/swap resolves —
