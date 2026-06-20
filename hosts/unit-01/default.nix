@@ -52,13 +52,17 @@
     # the kernel writing to a console nothing is reading.
     virtualisation.graphics = false;
 
-    # No swap in the VM, so don't let disko declare one and don't try
-    # to resume from it.
-    swapDevices = lib.mkForce [ ];
+    # Disko populates `fileSystems`, `swapDevices`, AND generates the
+    # corresponding systemd `.swap` / `.mount` units from its device
+    # tree. In a `build-vm` build those devices (swap label, BTRFS
+    # subvolumes) don't exist on the synthetic disk, so the units sit
+    # waiting forever (e.g. `A start job is running for
+    # /dev/disk/by-label/swap`). `enableConfig = false` makes disko
+    # generate only the partitioning *script* and inject nothing into
+    # the running config — `build-vm` then uses its own root fs.
+    disko.enableConfig = lib.mkForce false;
 
     boot = {
-      resumeDevice = lib.mkForce "";
-
       # `build-vm-with-bootloader` would otherwise try to install Limine
       # into the virtual ESP. Fall back to systemd-boot for the VM.
       loader = {
