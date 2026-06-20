@@ -48,8 +48,8 @@ Set up the repo to be clean from day one.
   - deadnix
 - [x] `.envrc` containing `use flake`
 - [x] `justfile` with: `switch`, `test`, `check`, `fmt`, `update`, `vm`, `gc`
-- [ ] Run `nix flake check`
-- [ ] Run `just fmt` and confirm clean
+- [x] Run `nix flake check`
+- [x] Run `just fmt` and confirm clean
 
 **Done when:** `nix flake check` passes, formatters and linters work, direnv activates on `cd` into the repo.
 
@@ -57,31 +57,31 @@ Set up the repo to be clean from day one.
 
 Goal: a config that boots in a VM to a TTY login with networking.
 
-- [ ] `hosts/unit-01/disko.nix`: ESP, swap (labelled `swap`), BTRFS with @, @home, @nix, @log, @snapshots, @persist
-- [ ] `hosts/unit-01/hardware.nix`: stub, refine with `nixos-generate-config` output during real install
-- [ ] `modules/core/boot.nix`:
+- [x] `hosts/unit-01/disko.nix`: ESP, swap (labelled `swap`), BTRFS with @, @home, @nix, @log, @snapshots, @persist
+- [x] `hosts/unit-01/hardware.nix`: stub, refine with `nixos-generate-config` output during real install
+- [x] `modules/core/boot.nix`:
   - `boot.loader.limine.enable = true`
   - `boot.loader.limine.efiSupport = true`
   - `boot.kernelPackages = pkgs.linuxPackages_zen`
   - `boot.resumeDevice = "/dev/disk/by-label/swap"`
   - `boot.kernelParams = [ "resume=/dev/disk/by-label/swap" ]`
-- [ ] `hosts/unit-01/specialisations.nix`:
+- [x] `hosts/unit-01/specialisations.nix`:
   ```nix
   specialisation.systemd-boot-fallback.configuration = {
     boot.loader.limine.enable = lib.mkForce false;
     boot.loader.systemd-boot.enable = lib.mkForce true;
   };
   ```
-- [ ] `modules/core/nix-settings.nix`:
+- [x] `modules/core/nix-settings.nix`:
   - Flakes, nix-command experimental features
   - `nix.gc` schedule
   - Binary cache config
   - `nixpkgs.config.allowUnfreePredicate` with starter allow-list
-- [ ] `modules/core/locale.nix`: en_AU.UTF-8, Australia/Melbourne
-- [ ] `modules/core/networking.nix`: NetworkManager, hostname `unit-01`, firewall on, SSH allowed
-- [ ] `modules/core/users.nix`: user `ellen`, wheel, fish, `initialHashedPassword`
-- [ ] `modules/options/nerv.nix`: skeleton custom options module (define a placeholder option to validate the pattern)
-- [ ] `hosts/unit-01/default.nix`: imports all of the above
+- [x] `modules/core/locale.nix`: en_AU.UTF-8, Australia/Melbourne
+- [x] `modules/core/networking.nix`: NetworkManager, hostname `unit-01`, firewall on, SSH allowed
+- [x] `modules/core/users.nix`: user `ellen`, wheel, fish, `initialHashedPassword`
+- [x] `modules/options/nerv.nix`: skeleton custom options module (define a placeholder option to validate the pattern)
+- [x] `hosts/unit-01/default.nix`: imports all of the above
 - [ ] `just vm`
 
 **VM test:**

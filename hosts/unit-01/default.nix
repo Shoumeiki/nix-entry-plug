@@ -1,30 +1,34 @@
-_: {
-  # ---------------------------------------------------------------------------
-  # STUB — Phase 1 placeholder so `nix flake check` evaluates.
-  #
-  # The values below are replaced in Phase 2:
-  #   - boot.loader.*    → modules/core/boot.nix (Limine) +
-  #                        hosts/unit-01/specialisations.nix (systemd-boot)
-  #   - fileSystems      → hosts/unit-01/disko.nix (Disko + BTRFS subvolumes)
-  #   - hardware tweaks  → hosts/unit-01/hardware.nix
-  #
-  # All real config (users, networking, locale, kernel, etc.) comes from
-  # `modules/` and gets imported here once those modules are written.
-  # ---------------------------------------------------------------------------
+{ inputs, ... }:
+{
+  imports = [
+    # Disko module (provides `disko.devices.*` options).
+    inputs.disko.nixosModules.disko
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+    # Host-specific bits.
+    ./hardware.nix
+    ./disko.nix
+    ./specialisations.nix
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "ext4";
-  };
+    # Custom options namespace.
+    ../../modules/options/nerv.nix
+
+    # Core system modules (host-agnostic).
+    ../../modules/core/boot.nix
+    ../../modules/core/locale.nix
+    ../../modules/core/networking.nix
+    ../../modules/core/nix-settings.nix
+    ../../modules/core/users.nix
+  ];
 
   networking.hostName = "unit-01";
 
-  # Pin the state version. Matches the NixOS release we're installing
-  # (26.05 "Yarara", current stable as of 2026-06).
-  # Don't change on an installed system — it gates DB / on-disk-format
-  # compatibility, not the running nixpkgs version.
+  # Disko target. `/dev/vda` for VM testing — swap to a `by-id` path
+  # (e.g. `/dev/disk/by-id/nvme-...`) when installing on real hardware.
+  nerv.disk.device = "/dev/vda";
+
+  # Pin state version. Matches the NixOS release we're installing
+  # (26.05 "Yarara", current stable as of 2026-06). Don't change on an
+  # installed system — it gates DB / on-disk-format compatibility, not
+  # the running nixpkgs version.
   system.stateVersion = "26.05";
 }
