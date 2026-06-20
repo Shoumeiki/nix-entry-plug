@@ -3,7 +3,7 @@
   # ---------------------------------------------------------------------------
   # Neovim, declaratively managed via home-manager.
   #
-  # Options are set in Lua via `extraLuaConfig`. Plugins are pinned by
+  # Options are set in Lua via `initLua`. Plugins are pinned by
   # home-manager (each entry pulls a derivation from pkgs.vimPlugins),
   # which means a `just switch` reproduces the editor state exactly — no
   # `:Lazy update` divergence between machines.
@@ -27,7 +27,7 @@
     extraPackages = with pkgs; [
       # Nix
       nil # LSP
-      nixfmt-rfc-style # formatter
+      nixfmt # formatter (`pkgs.nixfmt-rfc-style` is now an alias of this)
       # Lua (for editing this very config)
       lua-language-server
       stylua
@@ -60,7 +60,7 @@
       indent-blankline-nvim # indent guides
     ];
 
-    extraLuaConfig = ''
+    initLua = ''
       -- ---------------------------------------------------------------------
       -- Editor options
       -- ---------------------------------------------------------------------
