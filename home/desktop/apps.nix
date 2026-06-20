@@ -10,6 +10,7 @@
   # System-level things live in modules/:
   #   - Steam, gamescope, gamemode, MangoHud, Heroic, Prism → modules/gaming/steam.nix
   #   - Thunar + plugins + gvfs/tumbler                     → modules/desktop/thunar.nix
+  #   - GPU Screen Recorder + GTK GUI (needs setcap wrapper) → modules/desktop/gpu-screen-recorder.nix
   #   - Docker daemon                                        → modules/virtualisation/docker.nix
   #   - libvirtd / virt-manager / QEMU                       → modules/virtualisation/libvirt.nix
   # ---------------------------------------------------------------------------
@@ -30,17 +31,6 @@
 
     # MPD frontend.
     ncmpcpp.enable = true;
-
-    # OBS with the plugins needed for clean PipeWire audio routing.
-    # Screen capture on Hyprland goes through the xdg-desktop-portal-hyprland
-    # PipeWire path — no `wlrobs` needed (and it's been intermittently
-    # broken on unstable anyway).
-    obs-studio = {
-      enable = true;
-      plugins = with pkgs.obs-studio-plugins; [
-        obs-pipewire-audio-capture # per-app audio sources
-      ];
-    };
   };
 
   # MPD daemon (user-level). PipeWire output so it shares the same
@@ -67,7 +57,7 @@
 
     # ---- Creative --------------------------------------------------------
     krita # digital painting
-    audacity # audio editor (tenacity, the fork we'd prefer, is unmaintained and broken on nixos-unstable)
+    audacity # audio editor (tenacity, the fork we'd prefer, has no maintained Nix flake; audacity is the upstream parent and ships without telemetry on nixpkgs)
 
     # ---- Notes / docs ----------------------------------------------------
     obsidian # PKM (unfree — in allowUnfreePredicate)

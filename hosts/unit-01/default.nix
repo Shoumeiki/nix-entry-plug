@@ -30,6 +30,7 @@
     # Desktop prerequisites. The actual compositor (Hyprland), greeter,
     # and theming arrive in Phase 4.
     ../../modules/desktop/dconf.nix
+    ../../modules/desktop/gpu-screen-recorder.nix
     ../../modules/desktop/greetd.nix
     ../../modules/desktop/hyprland.nix
     ../../modules/desktop/nix-ld.nix

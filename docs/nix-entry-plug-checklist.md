@@ -155,7 +155,7 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 - [x] `home/common/default.nix`
 - [x] `home/common/shell.nix`: fish, starship, atuin, all aliases/abbreviations from spec §6
 - [x] `home/common/git.nix`: Shoumeiki identity, SSH signing, `init.defaultBranch = "main"`, `push.autoSetupRemote = true`
-- [x] `home/common/neovim.nix`: Neovim + LazyVim
+- [x] `home/common/neovim.nix`: Declarative Neovim (plugins via `pkgs.vimPlugins`, config in `initLua`, LSP for nil + lua-language-server)
 - [x] `home/common/direnv.nix`: direnv + nix-direnv
 - [x] `home/common/cli-tools.nix`: eza, bat, ripgrep, fd, fzf, zoxide, btop, tldr, dust, duf, procs, jq, yq, fastfetch
 
@@ -182,7 +182,7 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 ##### Applications
 
 - [x] `home/desktop/browsers.nix`: Zen (default), Helium
-- [x] `home/desktop/apps.nix`: Zed, Thunar (+ plugins), yazi, Signal, Vesktop, OBS, virt-manager + QEMU/KVM, Krita, Audacity, Obsidian, Zathura, LibreOffice, mpv, mpd + ncmpcpp, imv, Docker + Docker-Compose, OpenSSH client
+- [x] `home/desktop/apps.nix`: Zed, Thunar (+ plugins), yazi, Signal, Vesktop, virt-manager + QEMU/KVM, Krita, Audacity, Obsidian, Zathura, LibreOffice, mpv, mpd + ncmpcpp, imv, Docker + Docker-Compose, OpenSSH client
 - [x] `modules/gaming/steam.nix`:
   - `programs.steam.enable = true`
   - `programs.steam.gamescopeSession.enable = true`
@@ -256,6 +256,7 @@ This is the first time the system actually runs end-to-end.
 - [ ] Keybinds functional (launcher, terminal, screenshot, clipboard history)
 - [ ] Apps launch (Zen, Zed, Thunar, yazi, Signal, Vesktop, mpv)
 - [ ] Screen sharing works in Vesktop
+- [ ] `gpu-screen-recorder-gtk` can capture the screen without prompting for sudo (setcap wrapper applied)
 - [ ] Gaming: Steam launches, Proton game runs, gamemode + MangoHud overlay visible
 - [ ] gamescope session selectable at login
 - [ ] Hibernation: `systemctl hibernate` + clean resume to logged-in session

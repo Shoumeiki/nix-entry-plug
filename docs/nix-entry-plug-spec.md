@@ -371,14 +371,19 @@ nix-entry-plug/
 │   │   ├── bluetooth.nix      # BlueZ + blueman
 │   │   └── ssd.nix            # fstrim
 │   ├── desktop/
-│   │   ├── hyprland.nix       # Hyprland system-level
-│   │   ├── greetd.nix         # greetd + ReGreet
-│   │   ├── xdg-portal.nix     # XDG portals
 │   │   ├── dconf.nix
+│   │   ├── gpu-screen-recorder.nix # gpu-screen-recorder + GTK GUI (setcap wrapper)
+│   │   ├── greetd.nix         # greetd + ReGreet
+│   │   ├── hyprland.nix       # Hyprland system-level
 │   │   ├── nix-ld.nix
-│   │   └── stylix.nix         # Stylix system-level
+│   │   ├── stylix.nix         # Stylix system-level
+│   │   ├── thunar.nix         # Thunar + plugins + gvfs/tumbler
+│   │   └── xdg-portal.nix     # XDG portals
 │   ├── gaming/
 │   │   └── steam.nix          # Steam, Proton, gamemode, gamescope, MangoHud
+│   ├── virtualisation/
+│   │   ├── docker.nix         # Docker daemon
+│   │   └── libvirt.nix        # libvirtd + virt-manager + QEMU
 │   ├── options/
 │   │   └── nerv.nix           # Custom `nerv.*` option definitions
 │   └── secrets/
@@ -389,7 +394,7 @@ nix-entry-plug/
 │   │   ├── default.nix
 │   │   ├── shell.nix          # fish, starship, atuin, aliases, abbreviations
 │   │   ├── git.nix            # Shoumeiki identity, SSH signing
-│   │   ├── neovim.nix         # Neovim + LazyVim
+│   │   ├── neovim.nix         # Declarative Neovim + plugins + LSP
 │   │   ├── direnv.nix         # direnv + nix-direnv
 │   │   └── cli-tools.nix      # eza, bat, ripgrep, fd, fzf, zoxide, btop, etc.
 │   ├── desktop/
@@ -403,7 +408,7 @@ nix-entry-plug/
 │   │   ├── audio.nix          # PipeWire default sink/source
 │   │   ├── browsers.nix       # Zen + Helium
 │   │   ├── fun.nix            # cava, fastfetch
-│   │   └── apps.nix           # Thunar, yazi, Signal, Vesktop, OBS, virt-manager
+│   │   └── apps.nix           # Thunar, yazi, Signal, Vesktop, virt-manager (recording via modules/desktop/gpu-screen-recorder.nix)
 │   └── ellen.nix
 │
 ├── overlays/                  # Custom package overlays (use as needed)
