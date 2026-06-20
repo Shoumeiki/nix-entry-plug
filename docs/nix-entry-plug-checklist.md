@@ -206,28 +206,23 @@ This is where boot / login / networking / desktop / hardware are all validated f
 - [ ] Generate SSH key on the existing Arch system: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
 - [ ] Add public key to GitHub
 - [ ] **Full closure build on the Arch host** (the build that was deferred from Phase 5 — the Arch host has the disk a VM doesn't): in the Arch system's Nix-with-flakes shell, `cd nix-entry-plug && nix build .#nixosConfigurations.unit-01.config.system.build.toplevel -L`. This is the last opportunity to catch a broken derivation before pulling the plug on Arch.
-- [ ] Identify the real disk's `by-id` path: `ls -l /dev/disk/by-id/` and pick the NVMe entry. Update `nerv.disk.device` in `hosts/unit-01/default.nix`, commit, push.
-- [ ] Write `docs/install-guide.md`:
-  - Download NixOS minimal ISO, write to USB
-  - Boot, connect to network (ethernet)
-  - Set a temporary password for the installer user (`passwd`) so you can `ssh` in from a second machine if needed
-  - Clone `nix-entry-plug`
-  - `sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko -- --mode disko --flake .#unit-01`
-  - `sudo nixos-install --flake .#unit-01`
-  - Reboot
-- [ ] Write `docs/recovery.md`: "rebuild fails, now what":
-  - Boot previous generation from Limine menu
-  - Boot `systemd-boot-fallback` specialisation
-  - Boot from NixOS USB, `mount /dev/disk/by-label/nixos -o subvol=@ /mnt`, `nixos-enter`, `nixos-rebuild switch --flake /etc/nixos#unit-01`
-  - `git revert <bad-commit>` and rebuild
-- [ ] Have a second machine (laptop, phone tethered) available with the recovery doc open
+- [x] Confirm `nerv.disk.device` in `hosts/unit-01/default.nix` matches unit-01's disk. Currently `/dev/nvme0n1` (single NVMe, unambiguous).
+- [x] `docs/install-guide.md` written
+- [x] `docs/recovery.md` written
+- [ ] Have a second machine (laptop, phone tethered) available with `docs/recovery.md` open
 - [ ] Confirm a NixOS minimal installer USB is written, bootable, and on the desk
-- [ ] Back up anything from the Arch install that isn't already in the repo (browser profiles, SSH keys, GPG keys, anything in `~/.local/share` you care about)
+- [ ] Final pass: anything you wanted from the Arch install is backed up (browser profiles, SSH keys, GPG keys, `~/.local/share`, etc.) — user has chosen the full-bomb option, so this is your last checkpoint
 
 ##### Install
 
-- [ ] Boot from NixOS minimal USB
-- [ ] Follow `install-guide.md`
+Follow [`docs/install-guide.md`](./install-guide.md) end-to-end. Tick here when each phase of the guide is done:
+
+- [ ] Booted from NixOS minimal USB, network up
+- [ ] Flakes enabled on the installer
+- [ ] Repo cloned to `/tmp/nix-entry-plug`
+- [ ] `disko` ran cleanly, layout matches expectation (`findmnt -R /mnt`)
+- [ ] `nixos-install --flake .#unit-01 --no-root-passwd` completed successfully
+- [ ] First reboot lands at Limine → ReGreet
 
 ##### Post-install boot validation
 

@@ -38,23 +38,25 @@ Modules in `modules/` are host-agnostic; anything host-specific lives in `hosts/
 
 ```sh
 just switch      # format, lint, then nh os switch
-just test        # build without adding to boot menu
+just test        # build and activate without adding to boot menu
+just boot        # install for next boot only (won't activate now)
 just check       # nix flake check + statix + deadnix
+just build       # build the full host toplevel (no activation)
 just fmt         # treefmt the tree
-just update      # update flake inputs
-just vm          # build and launch a VM
-just gc          # garbage collect old generations
+just update      # update flake inputs and switch
+just diff        # nvd diff booted ↔ current
+just gc          # nh clean all --keep 5 --keep-since 7d
 ```
+
+See [`docs/recovery.md`](./docs/recovery.md) when something goes wrong.
 
 ## Install
 
-See `docs/install-guide.md` (Phase 6). TL;DR:
+Fresh install? See [`docs/install-guide.md`](./docs/install-guide.md). TL;DR (from a NixOS minimal ISO with flakes enabled and the repo cloned):
 
 ```sh
-# from NixOS minimal ISO
-git clone https://github.com/Shoumeiki/nix-entry-plug
-cd nix-entry-plug
-sudo nix --experimental-features 'nix-command flakes' \
-  run github:nix-community/disko -- --mode disko ./hosts/unit-01/disko.nix
-sudo nixos-install --flake .#unit-01
+sudo nix --extra-experimental-features 'nix-command flakes' \
+  run github:nix-community/disko -- \
+  --mode disko --flake .#unit-01
+sudo nixos-install --flake .#unit-01 --no-root-passwd
 ```
