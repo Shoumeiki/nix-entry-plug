@@ -45,6 +45,13 @@
   # unaffected.
   # ---------------------------------------------------------------------------
   virtualisation.vmVariant = {
+    # Headless VM: tell the qemu-vm module to skip display setup, wire
+    # the serial console to stdio, and add the matching `console=`
+    # kernel parameter on its own. Without this the generated run
+    # script adds `-display sdl` and our `-nographic` override leaves
+    # the kernel writing to a console nothing is reading.
+    virtualisation.graphics = false;
+
     # No swap in the VM, so don't let disko declare one and don't try
     # to resume from it.
     swapDevices = lib.mkForce [ ];
@@ -59,13 +66,9 @@
         systemd-boot.enable = lib.mkForce true;
       };
 
-      # Force kernel output to the serial console so `-nographic` works,
-      # and bump verbosity so we see early-boot messages if anything hangs.
-      kernelParams = [
-        "console=ttyS0,115200n8"
-        "console=tty1"
-        "loglevel=7"
-      ];
+      # Crank dmesg verbosity so we can see what's happening if boot
+      # stalls. Console wiring is handled by `virtualisation.graphics`.
+      kernelParams = [ "loglevel=7" ];
     };
   };
 }

@@ -54,12 +54,13 @@ vm:
     nixos-rebuild build-vm-with-bootloader --flake .#{{host}}
     QEMU_OPTS="{{qemu_opts}}" ./result/bin/run-{{host}}-vm
 
-# Headless VM: skips the bootloader and boots the kernel directly into a
-# text console on stdio. Use this when graphics aren't available or when
-# you only need to check boot / login / networking.
+# Headless VM: relies on `virtualisation.graphics = false` in the host's
+# vmVariant block to wire serial console + skip display setup. Boots
+# straight into a text console on stdio. Use this when graphics aren't
+# available or when you only need to check boot / login / networking.
 vm-headless:
     nixos-rebuild build-vm --flake .#{{host}}
-    QEMU_OPTS="-nographic" ./result/bin/run-{{host}}-vm
+    ./result/bin/run-{{host}}-vm
 
 # Garbage collect: keep the last 5 generations and anything from the last 7 days.
 gc:
