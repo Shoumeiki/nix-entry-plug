@@ -87,7 +87,10 @@
       preCommitCheck = git-hooks.lib.${system}.run {
         src = ./.;
         hooks = {
-          nixfmt-rfc-style.enable = true;
+          # `nixfmt` (≥ v1.0) is the post-RFC-166 hook. The older
+          # `nixfmt-rfc-style` key still works but triggers a deprecation
+          # warning now that `pkgs.nixfmt-rfc-style` is an alias of `pkgs.nixfmt`.
+          nixfmt.enable = true;
           statix.enable = true;
           deadnix.enable = true;
         };
@@ -103,9 +106,11 @@
             ./hosts/unit-01
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = moduleArgs;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = moduleArgs;
+              };
             }
           ];
         };

@@ -4,13 +4,6 @@
 
 Personal NixOS + home-manager flake. Hyprland on Wayland, Stylix theming, sops-nix for secrets, Disko for disks, Limine for boot.
 
-## Hosts
-
-| Host | Role | Status |
-| --- | --- | --- |
-| `unit-01` | AMD desktop (7800X3D / RX 7700 XT), gaming + dev | In progress |
-| `unit-00` / `unit-02` / `unit-03` / `unit-12` | management / media / NAS / router | Planned |
-
 ## Stack
 
 - **Boot:** Limine (primary) + systemd-boot (specialisation fallback)
@@ -19,7 +12,7 @@ Personal NixOS + home-manager flake. Hyprland on Wayland, Stylix theming, sops-n
 - **Desktop:** Hyprland, greetd + ReGreet, waybar, rofi, mako, hyprlock, hypridle, hyprshade
 - **Theming:** Stylix (Rosé Pine, dark), JetBrains Mono Nerd Font, Bibata cursors, Papirus icons
 - **Shell:** fish + starship + atuin, abundant abbreviations
-- **Editors:** Zed (GUI), Neovim + LazyVim (TUI)
+- **Editors:** Zed (GUI), Neovim (TUI)
 - **Tooling:** nh, nom, nvd, nix-index + comma, just, direnv + nix-direnv
 - **Quality:** nixfmt-rfc-style, statix, deadnix, treefmt-nix, pre-commit-hooks
 - **Secrets:** sops-nix (age)
@@ -52,8 +45,6 @@ just update      # update flake inputs
 just vm          # build and launch a VM
 just gc          # garbage collect old generations
 ```
-
-Common aliases (`rebuild`, `dry`, `gen-diff`, `clean`, ...) are listed in spec §6.
 
 ## Install
 

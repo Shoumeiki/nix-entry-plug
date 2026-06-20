@@ -6,7 +6,7 @@ _"The entry plug is the pilot's interface to the Evangelion. This repository is 
 **Primary hosting:** GitHub (github.com/Shoumeiki/nix-entry-plug)
 **Date created:** 2026-06-15
 
-This document is the actionable, phase-by-phase plan. The design decisions, system inventory, repo layout, alias reference, and external links live in [`nix-entry-plug-spec.md`](./nix-entry-plug-spec.md). Section references below (e.g. §3, §5, §6) point into that document.
+This document is the actionable, phase-by-phase plan. The design decisions, system inventory, repo layout, alias reference, and external links live in [`nix-entry-plug-spec.md`](./nix-entry-plug-spec.md).
 
 ---
 

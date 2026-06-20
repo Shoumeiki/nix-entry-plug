@@ -181,7 +181,7 @@ Stylix provides unified system-wide theming. `autoEnable = true` (default) appli
 | Terminal (light) | foot | nixpkgs (themed by Stylix) |
 | Terminal (feature) | kitty | nixpkgs (themed by Stylix) |
 | Editor (GUI) | Zed | nixpkgs |
-| Editor (TUI) | Neovim + LazyVim _(stays for now, learning curve)_ | nixpkgs |
+| Editor (TUI) | Neovim | nixpkgs |
 | Browser (primary) | Zen Browser | flake: github:0xc000022070/zen-browser-flake |
 | Browser (Chromium) | Helium Browser | flake: github:oxcl/nix-flake-helium-browser |
 | File manager (GUI) | Thunar | nixpkgs |
