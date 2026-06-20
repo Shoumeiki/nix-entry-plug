@@ -17,7 +17,20 @@
     ../../modules/core/locale.nix
     ../../modules/core/networking.nix
     ../../modules/core/nix-settings.nix
+    ../../modules/core/nix-tooling.nix
     ../../modules/core/users.nix
+
+    # Hardware modules. amd.nix and ssd.nix are unit-01-appropriate;
+    # split them out by host when a non-AMD or non-SSD machine joins.
+    ../../modules/hardware/amd.nix
+    ../../modules/hardware/audio.nix
+    ../../modules/hardware/bluetooth.nix
+    ../../modules/hardware/ssd.nix
+
+    # Desktop prerequisites. The actual compositor (Hyprland), greeter,
+    # and theming arrive in Phase 4.
+    ../../modules/desktop/dconf.nix
+    ../../modules/desktop/nix-ld.nix
   ];
 
   networking.hostName = "unit-01";
