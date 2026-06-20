@@ -31,12 +31,13 @@
     # MPD frontend.
     ncmpcpp.enable = true;
 
-    # OBS with the plugins needed for Wayland-native capture and clean
-    # PipeWire audio routing.
+    # OBS with the plugins needed for clean PipeWire audio routing.
+    # Screen capture on Hyprland goes through the xdg-desktop-portal-hyprland
+    # PipeWire path — no `wlrobs` needed (and it's been intermittently
+    # broken on unstable anyway).
     obs-studio = {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
-        wlrobs # wlroots / Hyprland screen capture
         obs-pipewire-audio-capture # per-app audio sources
       ];
     };
@@ -66,7 +67,7 @@
 
     # ---- Creative --------------------------------------------------------
     krita # digital painting
-    tenacity # audio editor (Audacity fork)
+    audacity # audio editor (tenacity, the fork we'd prefer, is unmaintained and broken on nixos-unstable)
 
     # ---- Notes / docs ----------------------------------------------------
     obsidian # PKM (unfree — in allowUnfreePredicate)

@@ -196,7 +196,7 @@ Stylix provides unified system-wide theming. `autoEnable = true` (default) appli
 | Gaming | Gamescope + `programs.steam.gamescopeSession.enable` | nixpkgs |
 | Gaming | MangoHud | nixpkgs |
 | Image editor | Krita | nixpkgs |
-| Audio editor | Tenacity | nixpkgs |
+| Audio editor | Audacity | nixpkgs |
 | Communication | Signal Desktop | nixpkgs |
 | Communication | Vesktop (Discord + Vencord) | nixpkgs |
 | Notes | Obsidian | nixpkgs |

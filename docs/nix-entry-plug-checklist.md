@@ -161,29 +161,29 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 ##### Desktop home
 
-- [ ] `home/desktop/default.nix`
-- [ ] `home/desktop/hyprland.nix`:
+- [x] `home/desktop/default.nix`
+- [x] `home/desktop/hyprland.nix`:
   - Monitors:
-    - Gigabyte M32U: `monitor = DP-X, 3840x2160@144, 0x0, 1` (primary, left)
-    - BenQ RD280UA: `monitor = DP-Y, 3840x2560@60, 3840x0, 1` (right)
+    - Gigabyte M32U: `monitor = DP-X, 3840x2160@144, 0x0, 1` (primary, left, DP-1)
+    - BenQ RD280UA: `monitor = DP-Y, 3840x2560@60, 3840x0, 1` (right, HDMI-A-1)
     - Confirm exact connector names during real install
   - KVM fallback: `exec-once = hyprctl output create headless` plus fallback workspace binding
   - Keybinds, window rules, input settings, animations (colours from Stylix)
   - hyprlock, hypridle, hyprpaper (Stylix managed)
-- [ ] `home/desktop/waybar.nix`
-- [ ] `home/desktop/rofi.nix`
-- [ ] `home/desktop/mako.nix`
-- [ ] `home/desktop/hyprshade.nix`: blue light filter with sunset/sunrise schedule
-- [ ] `home/desktop/terminals.nix`: foot + kitty
-- [ ] `home/desktop/audio.nix`: default sink/source config
-- [ ] `home/desktop/fun.nix`: cava, fastfetch on shell start
-- [ ] Clipboard (wl-clipboard + cliphist) and screenshot (grim + slurp) keybinds in Hyprland config
+- [x] `home/desktop/waybar.nix`
+- [x] `home/desktop/rofi.nix`
+- [x] `home/desktop/mako.nix`
+- [x] `home/desktop/hyprshade.nix`: blue light filter with sunset/sunrise schedule
+- [x] `home/desktop/terminals.nix`: foot + kitty
+- [x] `home/desktop/audio.nix`: default sink/source config
+- [x] `home/desktop/fun.nix`: cava, fastfetch on shell start
+- [x] Clipboard (wl-clipboard + cliphist) and screenshot (grim + slurp) keybinds in Hyprland config
 
 ##### Applications
 
-- [ ] `home/desktop/browsers.nix`: Zen (default), Helium
-- [ ] `home/desktop/apps.nix`: Zed, Thunar (+ plugins), yazi, Signal, Vesktop, OBS, virt-manager + QEMU/KVM, Krita, Tenacity, Obsidian, Zathura, LibreOffice, mpv, mpd + ncmpcpp, imv, Docker + Docker-Compose, OpenSSH client
-- [ ] `modules/gaming/steam.nix`:
+- [x] `home/desktop/browsers.nix`: Zen (default), Helium
+- [x] `home/desktop/apps.nix`: Zed, Thunar (+ plugins), yazi, Signal, Vesktop, OBS, virt-manager + QEMU/KVM, Krita, Audacity, Obsidian, Zathura, LibreOffice, mpv, mpd + ncmpcpp, imv, Docker + Docker-Compose, OpenSSH client
+- [x] `modules/gaming/steam.nix`:
   - `programs.steam.enable = true`
   - `programs.steam.gamescopeSession.enable = true`
   - gamemode, MangoHud, Heroic, PrismLauncher
