@@ -27,11 +27,14 @@ test:
 dry:
     nh os switch --hostname {{host}} --dry
 
-# Validate the flake and run all linters.
+# Validate the flake and run all linters. `nix flake check` runs nixfmt +
+# statix + deadnix via the pre-commit-hooks `checks` output, but the bare
+# statix / deadnix calls give faster, more readable output for day-to-day
+# linting. Wrapped in `nix develop -c` so they work without direnv active.
 check:
     nix flake check
-    statix check .
-    deadnix --fail .
+    nix develop -c statix check .
+    nix develop -c deadnix --fail .
 
 # Build the host's top-level system without activating it. The most
 # meaningful pre-install sanity check we have: forces every module to

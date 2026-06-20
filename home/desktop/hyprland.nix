@@ -264,46 +264,48 @@
 
   programs.hyprlock.enable = true;
 
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        lock_cmd = "pidof hyprlock || hyprlock";
-        before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
+  services = {
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+        };
+        listener = [
+          {
+            # 5 min → lock screen
+            timeout = 300;
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            # 10 min → DPMS off
+            timeout = 600;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+          {
+            # 30 min → suspend
+            timeout = 1800;
+            on-timeout = "systemctl suspend";
+          }
+        ];
       };
-      listener = [
-        {
-          # 5 min → lock screen
-          timeout = 300;
-          on-timeout = "loginctl lock-session";
-        }
-        {
-          # 10 min → DPMS off
-          timeout = 600;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-        {
-          # 30 min → suspend
-          timeout = 1800;
-          on-timeout = "systemctl suspend";
-        }
-      ];
     };
+
+    hyprpaper.enable = true;
+
+    # Clipboard history daemon — stores everything wl-paste sees so the
+    # Super+Shift+V keybind can pipe it through rofi.
+    cliphist = {
+      enable = true;
+      allowImages = true;
+    };
+
+    # Polkit agent for GUI sudo prompts.
+    hyprpolkitagent.enable = true;
   };
-
-  services.hyprpaper.enable = true;
-
-  # Clipboard history daemon — stores everything wl-paste sees so the
-  # Super+Shift+V keybind can pipe it through rofi.
-  services.cliphist = {
-    enable = true;
-    allowImages = true;
-  };
-
-  # Polkit agent for GUI sudo prompts.
-  services.hyprpolkitagent.enable = true;
 
   # CLI tools the Hyprland keybinds call by bare name.
   home.packages = with pkgs; [
