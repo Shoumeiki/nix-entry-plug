@@ -1,23 +1,42 @@
-# Nix
+# Nix build artifacts
 result
 result-*
 *.drv
 
+# VM build outputs (just vm / nixos-rebuild build-vm*)
+*.qcow2
+
 # direnv
 .direnv/
+.envrc.local
 
-# Editor/OS junk
+# Editor / OS junk
 .DS_Store
 *.swp
 *.swo
+*~
+.idea/
+.vscode/
+.zed/
 
-# Local secrets/key material
+# Secrets / key material
+# Encrypted files under secrets/ (e.g. secrets.yaml) are safe to commit.
 *.agekey
+*.age
 secrets/*.key
+secrets/keys.txt
+secrets/age/
 
-# Optional local env files
+# Local env files
 .env
 .env.*
 
-# Personal project documents
-documents/
+# Phase 0 migration artefacts (reference only, not part of the config)
+pkglist.txt
+dotfiles-backup/
+
+# nix-index / nix REPL state
+.nix-repl-history
+
+# pre-commit local state
+.pre-commit-config.yaml.bak
