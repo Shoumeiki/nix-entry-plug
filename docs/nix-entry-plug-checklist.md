@@ -142,8 +142,8 @@ Goal: a config that evaluates and builds for a TTY login with networking.
 
 **Validate:**
 
-- [ ] `just check` clean
-- [ ] `just build` succeeds (this will pull a lot — Hyprland, fonts, theming)
+- [x] `just check` clean
+- [x] `just build` succeeds (this will pull a lot — Hyprland, fonts, theming)
 
 **Done when:** Desktop modules build into the closure.
 
