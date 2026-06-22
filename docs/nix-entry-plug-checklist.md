@@ -203,25 +203,22 @@ This is where boot / login / networking / desktop / hardware are all validated f
 
 ##### Pre-install
 
-- [ ] Generate SSH key on the existing Arch system: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
-- [ ] Add public key to GitHub
-- [ ] **Full closure build on the Arch host** (the build that was deferred from Phase 5 — the Arch host has the disk a VM doesn't): in the Arch system's Nix-with-flakes shell, `cd nix-entry-plug && nix build .#nixosConfigurations.unit-01.config.system.build.toplevel -L`. This is the last opportunity to catch a broken derivation before pulling the plug on Arch.
 - [x] Confirm `nerv.disk.device` in `hosts/unit-01/default.nix` matches unit-01's disk. Currently `/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F` (Crucial P3 Plus 1TB, serial `2349457CF10F`).
 - [x] `docs/install-guide.md` written
 - [x] `docs/recovery.md` written
-- [ ] Have a second machine (laptop, phone tethered) available with `docs/recovery.md` open
-- [ ] Confirm a NixOS minimal installer USB is written, bootable, and on the desk
-- [ ] Final pass: anything you wanted from the Arch install is backed up (browser profiles, SSH keys, GPG keys, `~/.local/share`, etc.) — user has chosen the full-bomb option, so this is your last checkpoint
+- [x] Have a second machine (laptop, phone tethered) available with `docs/recovery.md` open
+- [x] Confirm a NixOS minimal installer USB is written, bootable, and on the desk
+- [x] Final pass: anything you wanted from the Arch install is backed up (browser profiles, SSH keys, GPG keys, `~/.local/share`, etc.) — user has chosen the full-bomb option, so this is your last checkpoint
 
 ##### Install
 
 Follow [`docs/install-guide.md`](./install-guide.md) end-to-end. Tick here when each phase of the guide is done:
 
-- [ ] Booted from NixOS minimal USB, network up
-- [ ] Flakes enabled on the installer
-- [ ] Repo cloned to `/tmp/nix-entry-plug`
-- [ ] `disko` ran cleanly, layout matches expectation (`findmnt -R /mnt`)
-- [ ] `nixos-install --flake .#unit-01 --no-root-passwd` completed successfully
+- [x] Booted from NixOS minimal USB, network up
+- [x] Flakes enabled on the installer
+- [x] Repo cloned to `/tmp/nix-entry-plug`
+- [x] `disko` ran cleanly, layout matches expectation (`findmnt -R /mnt`)
+- [x] `nixos-install --flake .#unit-01 --no-root-passwd` completed successfully
 - [ ] First reboot lands at Limine → ReGreet
 
 ##### Post-install boot validation

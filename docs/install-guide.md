@@ -33,9 +33,27 @@ On a working machine:
 
 ## 2. Boot the installer
 
+### 2a. Firmware (UEFI) settings
+
+Before booting the USB, hit the firmware **setup** key (Del / F2 on MSI — separate from the boot menu key) and confirm:
+
+- [ ] **UEFI mode** is the boot mode (not Legacy / CSM-only). Installing in Legacy mode onto the GPT + ESP layout disko creates produces exactly the "HDD isn't bootable" symptom on first reboot.
+- [ ] **Secure Boot** is **disabled**. Limine is unsigned in this config; you can opt into `boot.loader.limine.secureBoot.enable` later. With Secure Boot on, the firmware silently refuses to launch the bootloader.
+- [ ] **CSM / Legacy Option ROMs** is **disabled** (called "CSM Support" on MSI boards). With CSM enabled, some firmwares try Legacy boot first and never reach the EFI bootloader.
+- [ ] **Fast Boot** is **disabled** (MSI / ASUS quirk). Fast Boot skips parts of the EFI device enumeration, which can hide both the installer USB and the freshly-installed `\EFI\BOOT\BOOTX64.EFI` fallback path.
+- [ ] **Boot priority** doesn't have a stale entry from the previous OS pinned ahead of everything else. After a wipe-and-reinstall, an orphaned `arch` / `ubuntu` / `Windows Boot Manager` entry that points at a now-overwritten path can hang the firmware long enough that it gives up instead of trying the next entry. Delete any stale entries while you're in setup.
+
+Save and exit firmware setup.
+
+### 2b. Boot from the USB
+
 1. Plug the USB into unit-01.
-2. Boot, hit the firmware boot-menu key (usually F12 / F11 / Del — depends on board).
-3. Pick the USB. You should land in a TTY as `nixos`.
+2. Power on, hit the firmware **boot menu** key (F11 on MSI — separate from setup), pick the USB. You should land in a TTY as `nixos`.
+3. Confirm the installer itself booted in UEFI mode (anything else and the install will succeed but the result won't boot):
+   ```sh
+   [ -d /sys/firmware/efi ] && echo "UEFI ✓" || echo "Legacy/BIOS ✗"
+   ```
+   If it says Legacy/BIOS, reboot, re-check §2a, and try again.
 
 ---
 
@@ -53,6 +71,14 @@ Verify:
 ```sh
 ping -c 3 1.1.1.1
 ```
+
+Then confirm the clock is sane — the installer pulls signed substitutes over HTTPS from `cache.nixos.org`, and a skewed clock will fail TLS validation in ways that look like network errors:
+
+```sh
+timedatectl status
+```
+
+If the date is wildly off (RTC reset after a CMOS clear, for instance), fix it before continuing — `systemd-timesyncd` should sync once you're online, but you can also set it manually with `sudo timedatectl set-time "YYYY-MM-DD HH:MM:SS"`.
 
 ---
 
@@ -126,6 +152,16 @@ lsblk
 findmnt -R /mnt
 ```
 
+Confirm the ESP is mounted at `/mnt/boot`, formatted as `vfat`, and that its GPT partition type is the EFI System Partition GUID (`c12a7328-f81f-11d2-ba4b-00a0c93ec93b` — disko sets this from the `EF00` type code):
+
+```sh
+findmnt /mnt/boot                # fsType should be vfat
+sudo blkid /dev/disk/by-label/nixos   # btrfs root
+sudo sgdisk -p "$(readlink -f /dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F)"
+```
+
+The `sgdisk -p` output should show partition 1 with code `EF00` (EFI system partition). If it doesn't, **stop** — the firmware won't recognise the disk as bootable.
+
 ---
 
 ## 8. Install
@@ -140,6 +176,30 @@ sudo nixos-install --flake .#unit-01 --no-root-passwd
 
 When it finishes successfully you'll see something like `installation finished!`.
 
+### 8a. Verify the bootloader actually got installed
+
+Before rebooting, confirm Limine wrote its EFI binary to the universal fallback path (`boot.loader.limine.efiInstallAsRemovable = true` in [`modules/core/boot.nix`](../modules/core/boot.nix)):
+
+```sh
+sudo find /mnt/boot/efi -maxdepth 4 -type f -name '*.EFI' -o -name 'limine.conf'
+```
+
+You should see at least:
+
+- `/mnt/boot/efi/boot/BOOTX64.EFI` — the bootloader at the path every UEFI firmware tries unconditionally.
+- `/mnt/boot/limine/limine.conf` — Limine's menu config, listing the installed generation(s).
+- `/mnt/boot/limine/kernels/...` — kernel + initrd for each generation.
+
+If `/mnt/boot/efi/boot/BOOTX64.EFI` is **missing**, the bootloader step silently failed somewhere in `nixos-install`. Don't reboot — re-read the install log, fix the cause, and re-run `nixos-install --flake .#unit-01 --no-root-passwd`. Common causes: ESP wasn't mounted at `/mnt/boot` when install ran, ESP filled up, or `efibootmgr` couldn't reach EFI variables (installer not booted in UEFI mode — circle back to §2).
+
+For good measure, also check the firmware boot-order entries that `efibootmgr` knows about. With `efiInstallAsRemovable = true` Limine intentionally **doesn't** add an NVRAM entry (the fallback path makes it unnecessary), so this is informational:
+
+```sh
+sudo efibootmgr -v
+```
+
+You may still see a `Linux Boot Manager` entry from systemd-boot if the fallback specialisation installed one. That's fine — it's the recovery path.
+
 ---
 
 ## 9. First boot
@@ -152,6 +212,19 @@ Pull the USB. You should land at the **Limine** boot menu, then **ReGreet**.
 
 - Username: `ellen`
 - Password: whatever the hash in `modules/core/users.nix` decodes to (the one you set yourself in Phase 2 via `mkpasswd -m sha-512`). Phase 7 replaces this with a sops-managed file.
+
+### 9a. If the firmware says "no bootable device" / skips straight to PXE / loops back into firmware setup
+
+The first thing to try is the firmware **boot menu** (F11 on MSI) — pick the NVMe drive directly (it'll show up as `UEFI: <drive model>` or similar). If that boots into Limine, you have a boot-order issue, not a bootloader issue: go into firmware setup and pin the NVMe at the top, or delete leftover stale boot entries from the previous OS.
+
+If the NVMe doesn't appear in the boot menu, or selecting it goes nowhere, walk down this list:
+
+1. **Re-verify firmware settings (§2a)** — especially **CSM off** and **Secure Boot off**. After a fresh install, MSI boards have been known to flip CSM back on on their own when they don't immediately find a Legacy MBR.
+2. **Disable Fast Boot** if you didn't already. Fast Boot is the single most common cause of "the disk is fine but the firmware refuses to enumerate it".
+3. **Clear stale NVRAM entries.** Boot the installer USB again, `sudo efibootmgr -v` lists every EFI boot entry the firmware knows about. Anything that points at an old `\EFI\Arch\...` / `\EFI\ubuntu\...` / etc. path is now broken and may be sitting ahead of the disk in boot order. Delete with `sudo efibootmgr -b <hex-id> -B`.
+4. **Try the disk from the firmware's UEFI shell** if your board has one. From the shell, `fs0:` (or `fs1:`, whichever maps to the ESP), then `cd EFI\BOOT`, then `BOOTX64.EFI`. If that boots Limine, the binary is good and the firmware just isn't trying the fallback path — `efiInstallAsRemovable` plus removing stale NVRAM entries usually solves this once and for all.
+5. **Confirm `boot.loader.limine.efiInstallAsRemovable = true`** is in [`modules/core/boot.nix`](../modules/core/boot.nix). Without it, Limine relies on a `Limine` NVRAM entry that some firmwares ignore.
+6. **Chroot-fix.** Re-mount the installed system per the Tier 3 steps in [`recovery.md`](./recovery.md) and run `nixos-rebuild switch --flake .#unit-01 --install-bootloader` from inside the chroot. The `--install-bootloader` flag forces the bootloader install hook to run again.
 
 ---
 

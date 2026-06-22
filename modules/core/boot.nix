@@ -11,10 +11,18 @@
     # A systemd-boot specialisation lives alongside it in
     # hosts/<host>/specialisations.nix so a broken Limine update never
     # leaves the machine unbootable.
+    #
+    # `efiInstallAsRemovable = true` installs the EFI binary at the
+    # universal fallback path `\EFI\BOOT\BOOTX64.EFI`, so the disk boots
+    # even when the firmware ignores or loses the `Limine` NVRAM entry
+    # (MSI boards, CMOS resets, Fast Boot, stale entries from a previous
+    # OS). `canTouchEfiVariables` stays true for other consumers like
+    # fwupd capsule updates; Limine itself doesn't need it anymore.
     loader = {
       limine = {
         enable = true;
         efiSupport = true;
+        efiInstallAsRemovable = true;
       };
       efi.canTouchEfiVariables = true;
     };

@@ -26,6 +26,14 @@
             format = "vfat";
             mountpoint = "/boot";
             mountOptions = [ "umask=0077" ];
+            # `mkfs.vfat -n BOOT` so /dev/disk/by-label/BOOT resolves.
+            # Without this, by-label/BOOT never gets created and the
+            # recovery flow has to fall back to /dev/disk/by-partlabel/ESP
+            # (which disko sets automatically from the attrset key).
+            extraArgs = [
+              "-n"
+              "BOOT"
+            ];
           };
         };
 

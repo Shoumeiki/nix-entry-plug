@@ -96,7 +96,7 @@ Both bootloaders broken, or you can't reach a Linux session at all.
    sudo mount -t btrfs -o subvol=@nix      /dev/disk/by-label/nixos /mnt/nix
    sudo mount -t btrfs -o subvol=@log      /dev/disk/by-label/nixos /mnt/var/log
    sudo mount -t btrfs -o subvol=@persist  /dev/disk/by-label/nixos /mnt/persist
-   sudo mount /dev/disk/by-label/BOOT      /mnt/boot    # ESP — label may differ
+   sudo mount /dev/disk/by-partlabel/ESP   /mnt/boot   # ESP. by-label/BOOT also works on installs from the current disko.nix
    sudo swapon /dev/disk/by-label/swap
    ```
 4. Chroot in:
