@@ -56,12 +56,7 @@
     targets.console.enable = true;
   };
 
-  # Note: Stylix's regreet target IS enabled (autoEnable picks it up),
-  # so ReGreet gets the Rosé Pine wallpaper, font, cursor and theme.
-  # That wallpaper rendering requires a GStreamer plugin path the
-  # greeter user wouldn't otherwise have — see modules/desktop/greetd.nix
-  # for the GST_PLUGIN_SYSTEM_PATH_1_0 injection that makes it work.
-
+    targets.regreet.enable = false;
 
   # Stylix doesn't currently manage icon themes directly. Install Papirus
   # system-wide so GTK / Qt icon-theme settings (configured per-user via
