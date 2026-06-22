@@ -54,29 +54,14 @@
     # Theme the TTY palette too — useful when a graphical session fails
     # and you're back on the bare console.
     targets.console.enable = true;
-
-    # ReGreet (the greetd greeter) MUST be opted out.
-    #
-    # Stylix's regreet target writes /etc/greetd/regreet.toml with a
-    # `[background]` section pointing at `stylix.image` (a PNG). ReGreet
-    # 0.4.0 hands that path to GTK4's `gtk_media_file_new_for_filename`,
-    # which always routes through GStreamer (even for stills). The
-    # greeter user has no GStreamer plugin path → GStreamer logs a
-    # fatal-severity "missing decoder" → glib's default log handler
-    # escalates to `abort()`. ReGreet SIGABRTs ~2s into launch, greetd
-    # retries 5×, hits `start-limit-hit`, and the system is left at a
-    # console with no display manager.
-    #
-    # Coredump signature (regreet 0.4.0 + gtk4 + missing gst plugins):
-    #   gst_play_main → g_log → _g_log_abort.cold → abort
-    #
-    # Workarounds exist (pull gst-plugins-base/good into the greeter's
-    # PATH, or pin regreet < 0.4) but disabling the Stylix-managed
-    # config is the cheapest and the greeter is rarely seen anyway.
-    # Cursor/font/theme stylings live on the user's actual Hyprland
-    # session; only the greeter loses theming.
-    targets.regreet.enable = false;
   };
+
+  # Note: Stylix's regreet target IS enabled (autoEnable picks it up),
+  # so ReGreet gets the Rosé Pine wallpaper, font, cursor and theme.
+  # That wallpaper rendering requires a GStreamer plugin path the
+  # greeter user wouldn't otherwise have — see modules/desktop/greetd.nix
+  # for the GST_PLUGIN_SYSTEM_PATH_1_0 injection that makes it work.
+
 
   # Stylix doesn't currently manage icon themes directly. Install Papirus
   # system-wide so GTK / Qt icon-theme settings (configured per-user via
