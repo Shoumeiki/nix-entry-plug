@@ -42,10 +42,10 @@
       # BenQ's right edge) and pin workspace 10 to it so windows don't
       # migrate to the wrong real output when displays come back.
       monitor = [
-        "DP-1, 3840x2160@144, 0x0, 1"
-        "HDMI-A-1, 3840x2560@60, 3840x0, 1"
-        "HEADLESS-2, 1920x1080@60, 7680x0, 1"
-        ", preferred, auto, 1" # catch-all for anything else
+        "DP-1, 3840x2160@144, 0x0, 2"
+        "HDMI-A-1, 3840x2560@60, 1920x0, 2"
+        "HEADLESS-2, 1920x1080@60, 3840x0, 1"
+        ", preferred, auto, 2" # catch-all for anything else
       ];
 
       # ---- Workspace -> monitor pinning -----------------------------------
@@ -122,17 +122,21 @@
       animations.enabled = true;
 
       dwindle = {
-        pseudotile = true;
+        # pseudotile was removed in Hyprland 0.55 (it wasn't doing anything).
         preserve_split = true;
         smart_split = false;
       };
 
-      gestures.workspace_swipe = false;
+      # gestures.workspace_swipe was removed in 0.51; the entire gesture
+      # system was reworked. No gesture binds declared here since this
+      # machine has no touchpad.
+
+      debug.vfr = true;
 
       misc = {
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
-        vfr = true;
+        # vfr moved to the debug section in Hyprland 0.55.
         # Hide the terminal that launched a GUI app until the app exits.
         # Big QoL on a tiling WM.
         enable_swallow = true;
@@ -145,13 +149,15 @@
       };
 
       # Let bar / notifications / launcher participate in Hyprland's blur.
+      # layerrule v3 syntax: effects need an explicit value, target uses
+      # match:namespace.  ignorezero was renamed to ignore_alpha.
       layerrule = [
-        "blur, waybar"
-        "ignorezero, waybar"
-        "blur, notifications"
-        "ignorezero, notifications"
-        "blur, rofi"
-        "ignorezero, rofi"
+        "blur on, match:namespace waybar"
+        "ignore_alpha 0.0, match:namespace waybar"
+        "blur on, match:namespace notifications"
+        "ignore_alpha 0.0, match:namespace notifications"
+        "blur on, match:namespace rofi"
+        "ignore_alpha 0.0, match:namespace rofi"
       ];
 
       # Window rules. Hyprland 0.55 retired `windowrulev2` (the parser
@@ -203,7 +209,7 @@
           "$mainMod, V, togglefloating"
           "$mainMod, F, fullscreen"
           "$mainMod, P, pseudo"
-          "$mainMod, J, togglesplit"
+          "$mainMod, J, layoutmsg, togglesplit"
           "$mainMod, L, exec, hyprlock"
 
           # Focus
