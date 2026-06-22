@@ -68,6 +68,5 @@
 
     # ---- Dev tooling -----------------------------------------------------
     docker-compose # `docker compose` plugin
-    openssh # ssh / scp / sftp client (also pulled in by programs.ssh)
   ];
 }

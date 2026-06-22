@@ -10,20 +10,24 @@ _: {
 
   programs.git = {
     enable = true;
+
+    # SSH-based signing (not GPG). Home-manager's `signing` block writes
+    # the correct `user.signingKey`, `commit.gpgSign`, `tag.gpgSign`,
+    # `gpg.format`, and `gpg.ssh.program` (auto-pointed at ssh-keygen)
+    # for us. Same key as auth; no separate keyring to manage. The key
+    # itself is generated imperatively post-install since it shouldn't
+    # live in the public flake.
+    signing = {
+      key = "~/.ssh/id_ed25519.pub";
+      format = "ssh";
+      signByDefault = true;
+    };
+
     settings = {
       user = {
         name = "Shoumeiki";
         email = "186657365+Shoumeiki@users.noreply.github.com";
-        # SSH key used for commit signing. Same key as auth.
-        signingkey = "~/.ssh/id_ed25519.pub";
       };
-
-      # SSH-based signing (not GPG). The `gpgsign` keys govern signing for
-      # any configured `gpg.format` — the naming is a git historical
-      # artefact, the behaviour applies to ssh signatures too.
-      gpg.format = "ssh";
-      commit.gpgsign = true;
-      tag.gpgsign = true;
 
       init.defaultBranch = "main";
       push.autoSetupRemote = true;

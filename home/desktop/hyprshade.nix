@@ -29,8 +29,12 @@
       After = [ "graphical-session.target" ];
     };
     Service = {
+      # `hyprshade auto` consults the schedule, applies (or clears) the
+      # shader, and exits — a true one-shot. `Restart` doesn't apply to
+      # oneshot units; periodic re-evaluation is driven by the timer
+      # below.
+      Type = "oneshot";
       ExecStart = "${pkgs.hyprshade}/bin/hyprshade auto";
-      Restart = "on-failure";
     };
     Install.WantedBy = [ "graphical-session.target" ];
   };

@@ -147,8 +147,8 @@
           map("K",  vim.lsp.buf.hover,            "Hover")
           map("<leader>rn", vim.lsp.buf.rename,   "Rename symbol")
           map("<leader>ca", vim.lsp.buf.code_action, "Code action")
-          map("[d", vim.diagnostic.goto_prev,     "Prev diagnostic")
-          map("]d", vim.diagnostic.goto_next,     "Next diagnostic")
+          map("[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
+          map("]d", function() vim.diagnostic.jump({ count =  1, float = true }) end, "Next diagnostic")
         end,
       })
 
@@ -157,7 +157,7 @@
         callback = function(args)
           local clients = vim.lsp.get_clients({ bufnr = args.buf })
           for _, client in ipairs(clients) do
-            if client.supports_method("textDocument/formatting") then
+            if client:supports_method("textDocument/formatting") then
               vim.lsp.buf.format({ bufnr = args.buf, async = false })
               return
             end

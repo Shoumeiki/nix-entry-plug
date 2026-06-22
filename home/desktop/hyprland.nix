@@ -18,6 +18,14 @@
     package = null;
     portalPackage = null;
 
+    # Pin the rendered config format. Home-manager flips the default to
+    # "lua" on stateVersion >= 26.05 (we're on 26.05); without this pin
+    # the file below would be emitted as Lua syntax and fail to parse.
+    # Hyprland still supports the hyprlang format; it's just no longer
+    # the upstream-preferred path. Revisit when we're ready to port the
+    # full config to Lua.
+    configType = "hyprlang";
+
     settings = {
       # ---- Variables -------------------------------------------------------
       "$mainMod" = "SUPER";
@@ -146,22 +154,31 @@
         "ignorezero, rofi"
       ];
 
-      # Per-game tearing opt-in (general.allow_tearing only enables the
-      # capability; immediate is what actually requests it).
-      windowrulev2 = [
-        "immediate, class:^(steam_app_)(.*)$"
+      # Window rules. Hyprland 0.55 retired `windowrulev2` (the parser
+      # now rejects it as deprecated) and replaced it with a v3 syntax
+      # under the same `windowrule` keyword:
+      #   - match props use `match:<prop> <value>` (space, not colon)
+      #   - effects are `<effect> <value>` (booleans need an explicit
+      #     truthy value)
+      #   - effect names are lower_snake_case (`idle_inhibit`, not
+      #     `idleinhibit`)
+      #   - multiple match props / effects are comma-separated within a
+      #     single rule string
+      windowrule = [
+        # Per-game tearing opt-in (general.allow_tearing only enables
+        # the capability; `immediate` is what actually requests it).
+        "match:class ^(steam_app_)(.*)$, immediate true"
         # Common floats.
-        "float, class:^(pavucontrol)$"
-        "float, class:^(blueman-manager)$"
-        "float, class:^(nm-connection-editor)$"
-        "float, class:^(\\.?(file-roller|nautilus))$"
+        "match:class ^(pavucontrol)$, float true"
+        "match:class ^(blueman-manager)$, float true"
+        "match:class ^(nm-connection-editor)$, float true"
+        "match:class ^(\\.?(file-roller|nautilus))$, float true"
         # Picture-in-Picture: float + pin so it stays visible while
         # workspace-hopping.
-        "float, title:^(Picture-in-Picture)$"
-        "pin,   title:^(Picture-in-Picture)$"
+        "match:title ^(Picture-in-Picture)$, float true, pin true"
         # Keep the display awake while any window is fullscreen
         # (covers mpv, browsers, games, gamescope, OBS preview, ...).
-        "idleinhibit fullscreen, class:.*"
+        "match:class .*, idle_inhibit fullscreen"
       ];
 
       # ---- Keybinds --------------------------------------------------------
