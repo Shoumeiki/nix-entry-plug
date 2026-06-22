@@ -206,7 +206,7 @@ This is where boot / login / networking / desktop / hardware are all validated f
 - [ ] Generate SSH key on the existing Arch system: `ssh-keygen -t ed25519 -C "shoumeiki@github"`
 - [ ] Add public key to GitHub
 - [ ] **Full closure build on the Arch host** (the build that was deferred from Phase 5 — the Arch host has the disk a VM doesn't): in the Arch system's Nix-with-flakes shell, `cd nix-entry-plug && nix build .#nixosConfigurations.unit-01.config.system.build.toplevel -L`. This is the last opportunity to catch a broken derivation before pulling the plug on Arch.
-- [x] Confirm `nerv.disk.device` in `hosts/unit-01/default.nix` matches unit-01's disk. Currently `/dev/nvme0n1` (single NVMe, unambiguous).
+- [x] Confirm `nerv.disk.device` in `hosts/unit-01/default.nix` matches unit-01's disk. Currently `/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F` (Crucial P3 Plus 1TB, serial `2349457CF10F`).
 - [x] `docs/install-guide.md` written
 - [x] `docs/recovery.md` written
 - [ ] Have a second machine (laptop, phone tethered) available with `docs/recovery.md` open

@@ -54,9 +54,12 @@
 
   networking.hostName = "unit-01";
 
-  # Disko target. `/dev/nvme0n1` is unambiguous on this single-NVMe box;
-  # swap to a `/dev/disk/by-id/nvme-...` path if a second NVMe joins.
-  nerv.disk.device = "/dev/nvme0n1";
+  # Disko target. `/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F` is
+  # the stable by-id path for unit-01's NVMe (Crucial P3 Plus 1TB,
+  # serial 2349457CF10F). by-id paths don't shift if another drive
+  # joins, so this remains correct even if the kernel enumerates a
+  # second NVMe ahead of it.
+  nerv.disk.device = "/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F";
 
   # Pin state version. Don't change on an installed system — gates DB /
   # on-disk-format compatibility, not the running nixpkgs version.

@@ -11,10 +11,10 @@ If a rebuild on an already-installed system breaks, see [`recovery.md`](./recove
 - [ ] Anything you wanted from the old install is already backed up.
 - [ ] Phase 5 closure build has been validated on a machine with disk for it (the deferred Phase 5 gate in [`nix-entry-plug-checklist.md`](./nix-entry-plug-checklist.md)).
 - [ ] SSH key is generated and added to GitHub (the repo is public, but you'll want push access from `unit-01` afterwards).
-- [ ] `hosts/unit-01/default.nix` has `nerv.disk.device` pointing at the correct disk path. Currently `/dev/nvme0n1` — the single NVMe in unit-01.
+- [ ] `hosts/unit-01/default.nix` has `nerv.disk.device` pointing at the correct disk path. Currently `/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F` — the by-id path for unit-01's Crucial P3 Plus 1TB NVMe (serial `2349457CF10F`).
 
-> **About `/dev/nvme0n1` vs `/dev/disk/by-id/nvme-…`**
-> `/dev/nvme0n1` works because unit-01 has exactly one NVMe drive, so the enumeration is unambiguous. If you ever add a second NVMe, switch `nerv.disk.device` to a `by-id` path so the disko target can't get mistakenly applied to the wrong disk. For the initial install on a single-NVMe system, `nvme0n1` is fine.
+> **Verifying the by-id path on the live installer**
+> Once booted from the NixOS ISO, run `ls -l /dev/disk/by-id/ | grep nvme` and confirm the symlink name in `nerv.disk.device` matches what `nvme0n1` is pointing back at. by-id paths are stable across reboots and don't shift if another NVMe joins, so they're the right answer for any non-throwaway install.
 
 ---
 
@@ -98,7 +98,7 @@ cd nix-entry-plug
 
 ## 7. Partition with disko
 
-> ⚠️ **Destructive.** This wipes `/dev/nvme0n1` entirely. Triple-check the device path matches what you intend.
+> ⚠️ **Destructive.** This wipes the disk pointed to by `nerv.disk.device` (`/dev/disk/by-id/nvme-CT1000P3PSSD8_2349457CF10F` → `nvme0n1`) entirely. Triple-check the device path matches what you intend.
 
 ```sh
 sudo nix --extra-experimental-features 'nix-command flakes' \
