@@ -54,9 +54,9 @@
     # Theme the TTY palette too — useful when a graphical session fails
     # and you're back on the bare console.
     targets.console.enable = true;
-  };
 
     targets.regreet.enable = false;
+  };
 
   # Stylix doesn't currently manage icon themes directly. Install Papirus
   # system-wide so GTK / Qt icon-theme settings (configured per-user via
