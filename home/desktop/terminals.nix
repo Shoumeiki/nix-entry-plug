@@ -1,15 +1,6 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Terminal emulators.
-  #
-  # foot is the lightweight default (faster startup, used everywhere
-  # Hyprland's $terminal binding fires). kitty is the heavier feature
-  # terminal (image protocol, ligatures, kittens) kept around for tasks
-  # that want it.
-  #
-  # Stylix themes both via stylix.targets.foot / .kitty. Fonts are
-  # inherited from the global Stylix font config.
-  # ---------------------------------------------------------------------------
+  # foot is the default $terminal in Hyprland. kitty is kept for tasks needing
+  # its extra features (image protocol, ligatures, kittens).
 
   programs = {
     foot = {

@@ -1,9 +1,5 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Bluetooth: BlueZ stack + blueman tray applet.
-  # ---------------------------------------------------------------------------
-
   hardware.bluetooth = {
     enable = true;
     # Don't power the radio on at boot — let the user (or blueman) toggle

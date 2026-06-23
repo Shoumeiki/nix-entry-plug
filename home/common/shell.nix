@@ -1,14 +1,7 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Shell environment: fish + starship + atuin, plus the alias / abbreviation
-  # set from nix-entry-plug-spec.md §6.
-  #
-  # Fish ABBREVIATIONS (not aliases) for almost everything: they expand
-  # inline at the prompt so you can see the real command before running it.
-  # A few entries stay as aliases / functions where transparency matters
-  # more than visibility (URL fetches, the comma binary, etc.).
-  # ---------------------------------------------------------------------------
+  # Fish ABBREVIATIONS (not aliases): they expand inline at the prompt so
+  # you can see the real command before running it.
 
   programs = {
     fish = {
@@ -22,16 +15,12 @@
         dry = "nh os switch --dry";
         update = "nh os switch --update";
         gen = "sudo nix-env -p /nix/var/nix/profiles/system --list-generations";
-        gen-diff = "nvd diff /run/current-system /run/booted-system";
+        gen-diff = "nvd diff /run/booted-system /run/current-system";
         clean = "nh clean all --keep 5 --keep-since 7d";
         search = "nh search";
         repl = "nix repl --expr 'import <nixpkgs> {}'";
 
         # ----- Filesystem / navigation -------------------------------------
-        # eza covers ls/ll/la/tree; zoxide replaces cd via `programs.zoxide.options`
-        # in cli-tools.nix. bat/fd/rg/dust/duf/procs/btop substitute for the
-        # legacy tools, with bare `\find`, `\grep`, etc. still reachable via
-        # the leading-backslash escape.
         ls = "eza --icons --group-directories-first";
         ll = "eza -l --icons --git --group-directories-first";
         la = "eza -la --icons --git --group-directories-first";
@@ -66,13 +55,9 @@
         myip = "curl ifconfig.me";
       };
 
-      # Functions live here when an abbreviation isn't enough (multi-line
-      # logic, argument handling, etc.).
-      functions = { };
     };
 
-    # Starship prompt. Theming is pulled from Stylix automatically via
-    # stylix.targets.starship (autoEnable = true in modules/desktop/stylix.nix).
+    # Stylix themes starship automatically via stylix.targets.starship.
     starship = {
       enable = true;
       enableFishIntegration = true;
@@ -93,13 +78,8 @@
         filter_mode_shell_up_key_down = "session";
         style = "compact";
       };
-      # Sync server config (atuin.sh or self-hosted) is set imperatively
-      # post-install via `atuin login`. Keeps server URL / credentials
-      # out of the public flake.
     };
   };
 
-  # fish needs grep, curl, etc. for some abbreviations. Most are already
-  # on PATH via cli-tools.nix; curl is here for `weather` / `myip`.
   home.packages = [ pkgs.curl ];
 }

@@ -1,14 +1,5 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Steam, gamescope, gamemode, MangoHud, and the non-Steam launchers.
-  #
-  # All system-level: programs.steam sets up the proton SUID wrapper,
-  # kernel knobs, and 32-bit graphics layer. Per-user config (specific
-  # Proton GE selection, MangoHud overlay rules) is done imperatively
-  # inside Steam itself.
-  # ---------------------------------------------------------------------------
-
   programs.steam = {
     enable = true;
     # Separate Wayland session launchable from the greeter. Boots straight

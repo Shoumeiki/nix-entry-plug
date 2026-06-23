@@ -1,13 +1,6 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Hardware tweaks for unit-01.
-  #
-  # initrd modules cover both the real AM5 box (ahci, xhci_pci, sd_mod,
-  # nvme) and a QEMU/KVM guest (virtio*) so the same config boots in both.
-  # Refine with the output of `nixos-generate-config` during the install
-  # if anything's missing.
-  # ---------------------------------------------------------------------------
-
+  # Covers bare-metal (nvme, xhci_pci, ahci) and QEMU/KVM (virtio*).
+  # Refine with `nixos-generate-config` output during install if anything's missing.
   boot.initrd.availableKernelModules = [
     # VM
     "virtio_pci"

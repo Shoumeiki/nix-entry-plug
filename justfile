@@ -6,6 +6,9 @@ set shell := ["bash", "-cu"]
 # Default host for build / switch / test targets.
 host := "unit-01"
 
+# Tell nh where the flake lives so it doesn't fall back to /etc/nixos.
+export NH_FLAKE := justfile_directory()
+
 # Show available targets.
 default:
     @just --list

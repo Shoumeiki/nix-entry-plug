@@ -1,14 +1,9 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Fun / decorative bits.
-  #
-  # fastfetch is already enabled in common/cli-tools.nix; here we wire it
-  # into fish's interactive shell init so every new terminal greets you
-  # with the system info banner.
-  # ---------------------------------------------------------------------------
+  # fastfetch is installed in common/cli-tools.nix; this wires it into the
+  # interactive shell so each new terminal prints the system info banner.
 
-  home.packages = [ pkgs.cava ]; # audio visualiser
+  home.packages = [ pkgs.cava ];
 
   programs.fish.interactiveShellInit = ''
     # Skip in non-interactive child shells (e.g. inside scripts, vim

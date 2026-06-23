@@ -1,11 +1,7 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Boot, kernel, hibernation.
-  # Host-agnostic: any host that uses this module must label its swap
-  # partition `swap` (Disko handles this in hosts/<host>/disko.nix).
-  # ---------------------------------------------------------------------------
-
+  # Hosts that import this module must label their swap partition `swap`
+  # (Disko sets this in hosts/<host>/disko.nix).
   boot = {
     # Primary bootloader: Limine.
     # A systemd-boot specialisation lives alongside it in
@@ -31,14 +27,12 @@
     kernelPackages = pkgs.linuxPackages_zen;
 
     # Hibernation: resume from the swap partition labelled `swap`.
-    # Setting `resumeDevice` adds the corresponding `resume=` kernel param
-    # automatically, but we set it explicitly for clarity / belt-and-braces.
+    # `resumeDevice` adds the `resume=` kernel param automatically.
     resumeDevice = "/dev/disk/by-label/swap";
 
+    # Suppress kernel/udev noise during boot so Plymouth has a clean canvas.
+    # Errors still surface via journalctl.
     kernelParams = [
-      "resume=/dev/disk/by-label/swap"
-      # Suppress most kernel / udev noise during boot so Plymouth has a
-      # clean canvas. Errors still surface via journalctl.
       "quiet"
       "splash"
       "udev.log_level=3"

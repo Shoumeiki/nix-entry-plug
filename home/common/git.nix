@@ -1,22 +1,9 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Git + SSH client config.
-  #
-  # Identity: github.com/Shoumeiki. Commit signing uses SSH (not GPG) —
-  # same key as auth, no separate keyring to manage. The key itself is
-  # generated imperatively post-install since it shouldn't live in the
-  # public flake.
-  # ---------------------------------------------------------------------------
-
+  # Commit signing uses SSH (not GPG) — same key as auth, no separate keyring.
+  # The key is generated imperatively post-install; it shouldn't live in the flake.
   programs.git = {
     enable = true;
 
-    # SSH-based signing (not GPG). Home-manager's `signing` block writes
-    # the correct `user.signingKey`, `commit.gpgSign`, `tag.gpgSign`,
-    # `gpg.format`, and `gpg.ssh.program` (auto-pointed at ssh-keygen)
-    # for us. Same key as auth; no separate keyring to manage. The key
-    # itself is generated imperatively post-install since it shouldn't
-    # live in the public flake.
     signing = {
       key = "~/.ssh/id_ed25519.pub";
       format = "ssh";

@@ -1,14 +1,6 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # waybar: status bar.
-  #
-  # Two bars, one per monitor:
-  #   - primary on DP-1 (Gigabyte M32U): all the info modules
-  #   - secondary on HDMI-A-1 (BenQ): minimal — workspaces + window title + clock
-  #
-  # Stylix themes both bars' CSS (colours, fonts) via stylix.targets.waybar.
-  # This file only declares structure — what modules appear where.
-  # ---------------------------------------------------------------------------
+  # Two bars: primary (DP-1, full modules) and secondary (HDMI-A-1, minimal).
+  # Stylix themes CSS via stylix.targets.waybar; this file declares structure only.
 
   programs.waybar = {
     enable = true;

@@ -1,17 +1,6 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Thunar: GTK file manager.
-  #
-  # `programs.thunar` is system-level (registers MIME associations, the
-  # `Open with` integration, and the thunar-daemon service); per-user
-  # settings (bookmarks, columns) live in home-manager state and are
-  # configured interactively.
-  #
-  # gvfs handles mounts (network shares, MTP devices, trash). tumbler
-  # generates thumbnails for the icon view.
-  # ---------------------------------------------------------------------------
-
+  # gvfs: network shares, MTP, trash. tumbler: thumbnail generation.
   programs.thunar = {
     enable = true;
     plugins = with pkgs; [

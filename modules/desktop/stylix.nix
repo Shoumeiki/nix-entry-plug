@@ -1,15 +1,7 @@
 { inputs, pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Stylix: unified system-wide theming.
-  #
-  # autoEnable = true (default) lets Stylix theme every supported target it
-  # finds — Hyprland, hyprpaper, hyprlock, waybar, mako, foot, kitty, GTK,
-  # Qt, ReGreet, bat, fish, starship, etc. — without per-target plumbing.
-  # Disable individual targets via `stylix.targets.<name>.enable = false`
-  # if any one needs to opt out.
-  # ---------------------------------------------------------------------------
-
+  # autoEnable = true (default) themes every supported target automatically.
+  # Opt specific targets out via `stylix.targets.<name>.enable = false`.
   imports = [ inputs.stylix.nixosModules.stylix ];
 
   stylix = {

@@ -1,15 +1,7 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # hyprshade: blue-light filter for Hyprland.
-  #
-  # hyprshade ships only as a CLI tool — there's no home-manager service
-  # module for it. We declare the schedule in
-  # ~/.config/hyprshade/config.toml and start the user systemd unit that
-  # ships with the package, which periodically re-evaluates the schedule.
-  #
-  # Times use 24-hour local time. Adjust to taste once on real hardware.
-  # ---------------------------------------------------------------------------
+  # hyprshade has no home-manager module; the schedule is declared in
+  # ~/.config/hyprshade/config.toml and re-evaluated every 15 minutes via systemd.
 
   home.packages = [ pkgs.hyprshade ];
 

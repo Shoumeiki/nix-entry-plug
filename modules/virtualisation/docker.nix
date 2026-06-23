@@ -1,12 +1,4 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Docker daemon.
-  #
-  # Auto-start on boot so `docker ps` works after a clean login.
-  # ellen is already in the `docker` group via modules/core/users.nix,
-  # which is what grants /var/run/docker.sock access.
-  # ---------------------------------------------------------------------------
-
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;

@@ -1,14 +1,7 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # CLI tooling: modern replacements for the classic Unix utilities plus
-  # a few extras.
-  #
-  # Tools with home-manager modules use the module (which sets up shell
-  # integration, completions, and Stylix theming automatically). Plain
-  # binaries with no shell wiring go in home.packages.
-  # ---------------------------------------------------------------------------
-
+  # Tools with home-manager modules use the module for shell integration,
+  # completions, and Stylix theming. Plain binaries go in home.packages.
   programs = {
     # `ls` family. Shell abbreviations in shell.nix override the auto-aliases
     # to give us explicit flag control.
@@ -37,23 +30,18 @@
       options = [ "--cmd cd" ];
     };
 
-    # Process / resource monitor. Replaces `top` / `htop`.
     btop.enable = true;
-
-    # System info on shell start (decorative; the actual exec-once is
-    # in home/desktop/fun.nix once the desktop layer lands).
     fastfetch.enable = true;
   };
 
-  # Plain binaries.
   home.packages = with pkgs; [
-    ripgrep # rg
-    fd # fd
-    tldr # short man pages
-    dust # du
-    duf # df
-    procs # ps
-    jq # JSON
-    yq # YAML / TOML / XML
+    ripgrep
+    fd
+    tldr
+    dust
+    duf
+    procs
+    jq
+    yq
   ];
 }

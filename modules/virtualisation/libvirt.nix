@@ -1,14 +1,6 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # QEMU/KVM via libvirt + virt-manager GUI.
-  #
-  # Membership of `libvirtd` group (granted to ellen in
-  # modules/core/users.nix) is what makes virt-manager work without sudo.
-  # swtpm provides virtual TPMs (needed for modern Windows guests,
-  # secureboot tests, etc.). OVMF firmware ships bundled with QEMU.
-  # ---------------------------------------------------------------------------
-
+  # libvirtd group membership (users.nix) grants virt-manager access without sudo.
   virtualisation.libvirtd = {
     enable = true;
     qemu = {

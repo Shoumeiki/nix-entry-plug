@@ -1,17 +1,8 @@
 { lib, pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Hyprland user config.
-  #
-  # The compositor itself is enabled at the system level
-  # (modules/desktop/hyprland.nix). Setting `package = null` here tells
-  # home-manager NOT to install a second copy — we drive the system one
-  # with this config.
-  #
-  # Stylix manages colours, borders, and the lock/idle/wallpaper appearance
-  # via stylix.targets.hyprland / hyprlock / hyprpaper, so nothing in this
-  # file sets a hex value.
-  # ---------------------------------------------------------------------------
+  # `package = null` prevents home-manager from installing a second copy of Hyprland;
+  # the system-level compositor (modules/desktop/hyprland.nix) is reused.
+  # Stylix manages colours via stylix.targets.hyprland — no hex values here.
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -27,25 +18,41 @@
     configType = "hyprlang";
 
     settings = {
+      # ---- Environment variables -------------------------------------------
+      # STEAM_FORCE_DESKTOPUI_SCALING: Steam renders its client UI at 1×
+      # (because force_zero_scaling tells XWayland to report scale=1), so
+      # we nudge it to match the compositor's upscale factor for DP-1.
+      env = [
+        "STEAM_FORCE_DESKTOPUI_SCALING,1.33"
+      ];
+
       # ---- Variables -------------------------------------------------------
       "$mainMod" = "SUPER";
       "$terminal" = "foot";
       "$fileManager" = "thunar";
       "$menu" = "rofi -show drun";
-      "$browser" = "zen";
+      "$browser" = "zen-beta";
 
       # ---- Monitors --------------------------------------------------------
       # Connectors as enumerated on unit-01: DP-1 = Gigabyte M32U (left),
       # HDMI-A-1 = BenQ RD280UA (right). The KVM switch has no EDID
       # emulation, so monitors vanish on input switch; we create a
-      # headless output (placed off to the right at x = 7680, past the
-      # BenQ's right edge) and pin workspace 10 to it so windows don't
-      # migrate to the wrong real output when displays come back.
+      # headless output (placed off to the right past the BenQ's right
+      # edge) and pin workspace 10 to it so windows don't migrate to the
+      # wrong real output when displays come back.
+      #
+      # `auto-right` lets Hyprland compute the adjacency offset itself,
+      # sidestepping the fractional-scale rounding problem entirely.
+      #
+      # Scales must divide the physical resolution into whole pixels or
+      # Hyprland snaps them internally and positions go wrong:
+      #   DP-1  1.25 → 3840÷1.25 = 3072  2160÷1.25 = 1728  ✓
+      #   BenQ  1.6  → 3840÷1.6  = 2400  2560÷1.6  = 1600  ✓
       monitor = [
-        "DP-1, 3840x2160@144, 0x0, 2"
-        "HDMI-A-1, 3840x2560@60, 1920x0, 2"
-        "HEADLESS-2, 1920x1080@60, 3840x0, 1"
-        ", preferred, auto, 2" # catch-all for anything else
+        "DP-1, 3840x2160@144, 0x0, 1.25"
+        "HDMI-A-1, 3840x2560@50, auto-right, 1.6"
+        "HEADLESS-2, 1920x1080@60, auto-left, 1"
+        ", preferred, auto, 1.5" # catch-all for anything else
       ];
 
       # ---- Workspace -> monitor pinning -----------------------------------
@@ -72,6 +79,13 @@
         # KVM fallback output. Created at startup so workspace 10 has
         # somewhere to live even when DP-1 / HDMI-A-1 are present.
         "hyprctl output create headless"
+
+        # Ensure the GNOME Keyring daemon is running and its D-Bus socket is
+        # registered. PAM (greetd) should start it on login, but propagation
+        # to the Wayland session is unreliable — starting it here is the
+        # belt-and-suspenders guarantee that libsecret apps (Zed, Electron,
+        # git-credential-libsecret) find the secret service.
+        "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh"
       ];
 
       # ---- Input -----------------------------------------------------------
@@ -85,6 +99,13 @@
           tap-to-click = true;
         };
       };
+
+      # ---- XWayland --------------------------------------------------------
+      # force_zero_scaling stops Hyprland pre-scaling the XWayland
+      # framebuffer before compositing — XWayland apps (Steam, Electron,
+      # etc.) render at 1× and the compositor does one clean upscale pass
+      # instead of a blurry double-scale.
+      xwayland.force_zero_scaling = true;
 
       # ---- Cursor ----------------------------------------------------------
       cursor = {
@@ -145,7 +166,8 @@
         # links) actually raise + focus. The second option un-fullscreens
         # the current window so the new one isn't hidden under it.
         focus_on_activate = true;
-        new_window_takes_over_fullscreen = 2;
+        # Renamed from new_window_takes_over_fullscreen in 0.53.
+        on_focus_under_fullscreen = 2;
       };
 
       # Let bar / notifications / launcher participate in Hyprland's blur.
@@ -280,10 +302,6 @@
       submap = reset
     '';
   };
-
-  # ---------------------------------------------------------------------------
-  # Lock / idle / wallpaper / clipboard / polkit — user systemd services.
-  # ---------------------------------------------------------------------------
 
   programs.hyprlock.enable = true;
 

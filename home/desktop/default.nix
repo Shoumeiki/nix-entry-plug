@@ -1,11 +1,5 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Desktop-specific home-manager modules.
-  #
-  # Anything in this directory assumes a Wayland session with Hyprland.
-  # Headless hosts shouldn't import ./desktop/ from their user entrypoint.
-  # ---------------------------------------------------------------------------
-
+  # Assumes a Wayland/Hyprland session. Don't import from headless host entrypoints.
   imports = [
     ./apps.nix
     ./audio.nix

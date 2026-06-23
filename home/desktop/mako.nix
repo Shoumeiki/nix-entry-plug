@@ -1,10 +1,5 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # mako: Wayland notification daemon.
-  #
-  # Stylix themes via stylix.targets.mako. This file only sets behaviour
-  # (timeouts, anchor, history).
-  # ---------------------------------------------------------------------------
+  # Stylix handles theming via stylix.targets.mako. This file sets behaviour only.
 
   services.mako = {
     enable = true;

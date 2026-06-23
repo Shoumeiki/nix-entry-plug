@@ -1,14 +1,7 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # User accounts.
-  #
-  # `initialHashedPassword` avoids the sops-nix bootstrap chicken-and-egg —
-  # the password hash is committed and applied at first install. Phase 7
-  # swaps this in for `hashedPasswordFile` pointing at a sops-managed
-  # secret; the line below goes away then.
-  # ---------------------------------------------------------------------------
-
+  # `initialHashedPassword` avoids the sops-nix bootstrap chicken-and-egg.
+  # Swap for `hashedPasswordFile` once sops-nix is integrated.
   programs.fish.enable = true;
 
   users.users.ellen = {

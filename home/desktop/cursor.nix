@@ -1,13 +1,6 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # Pointer cursor.
-  #
-  # Stylix sets the cursor package + name + size at the home-manager level.
-  # We have to flip the per-toolkit enable flags ourselves so the cursor
-  # is consistent across native Wayland (hyprcursor), GTK, and XWayland
-  # apps. Without these, you'll see the Bibata cursor in some windows
-  # and the default Adwaita cursor in others.
-  # ---------------------------------------------------------------------------
+  # Stylix sets the cursor package/name/size. These flags ensure it applies
+  # consistently across native Wayland (hyprcursor), GTK, and XWayland apps.
 
   home.pointerCursor = {
     hyprcursor.enable = true;

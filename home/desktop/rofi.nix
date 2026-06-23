@@ -1,10 +1,5 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # rofi: app launcher / dmenu replacement.
-  #
-  # Stylix themes the visuals via stylix.targets.rofi. Behaviour knobs live
-  # here.
-  # ---------------------------------------------------------------------------
+  # Stylix themes visuals via stylix.targets.rofi. This file sets behaviour only.
 
   programs.rofi = {
     enable = true;

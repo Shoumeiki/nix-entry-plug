@@ -1,13 +1,7 @@
 { lib, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # nerv.* — self-documenting toggles for host config.
-  #
-  # Rule of thumb: anything a host needs to declare more than once, or that
-  # changes per host, becomes a `nerv.*` option here. Modules then key off
-  # the option instead of host-specific imports.
-  # ---------------------------------------------------------------------------
-
+  # Per-host values surfaced as options so modules can read them without
+  # direct host-specific imports.
   options.nerv = {
     disk.device = lib.mkOption {
       type = lib.types.str;

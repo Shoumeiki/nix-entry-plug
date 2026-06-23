@@ -1,17 +1,7 @@
 { config, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Disko: declarative disk layout for unit-01.
-  #
-  # Layout:
-  #   ESP   512M  vfat    /boot
-  #   swap  32G   swap    (labelled `swap` for hibernation resume)
-  #   root  rest  btrfs   subvolumes: @, @home, @nix, @log, @snapshots, @persist
-  #
-  # The `@persist` subvolume is created from day one even though Impermanence
-  # isn't enabled yet, so the layout is already correct when it lands.
-  # ---------------------------------------------------------------------------
-
+  # Layout: ESP 512M | swap 32G (labelled `swap` for hibernation) | btrfs root
+  # Subvolumes: @, @home, @nix, @log, @snapshots, @persist (ready for Impermanence).
   disko.devices.disk.main = {
     type = "disk";
     device = config.nerv.disk.device;

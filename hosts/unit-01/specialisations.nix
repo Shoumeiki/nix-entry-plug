@@ -1,12 +1,6 @@
 { lib, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # systemd-boot fallback specialisation.
-  #
-  # Picked from the boot menu when a Limine update breaks. Boots the same
-  # generation under systemd-boot instead of Limine. Fix Limine, switch back.
-  # ---------------------------------------------------------------------------
-
+  # Fallback: boot the same generation under systemd-boot when Limine breaks.
   specialisation.systemd-boot-fallback.configuration = {
     boot.loader = {
       limine.enable = lib.mkForce false;

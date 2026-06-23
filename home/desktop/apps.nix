@@ -1,19 +1,7 @@
 { config, pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # User-installed applications.
-  #
-  # HM modules get used where they earn their keep (sensible defaults,
-  # Stylix theming, shell integration). Everything else is just a package
-  # in home.packages.
-  #
-  # System-level apps that need root setup live in modules/:
-  #   Steam + gamescope + gamemode + MangoHud + Heroic + Prism → modules/gaming/steam.nix
-  #   Thunar + plugins + gvfs/tumbler                          → modules/desktop/thunar.nix
-  #   GPU Screen Recorder + GTK GUI (setcap wrapper)           → modules/desktop/gpu-screen-recorder.nix
-  #   Docker daemon                                             → modules/virtualisation/docker.nix
-  #   libvirtd + virt-manager + QEMU                            → modules/virtualisation/libvirt.nix
-  # ---------------------------------------------------------------------------
+  # HM modules used where they add value (sensible defaults, Stylix, shell integration).
+  # Apps requiring root setup live in modules/ (gaming, thunar, gpu-screen-recorder, docker, libvirt).
 
   programs = {
     # TUI file manager. enableFishIntegration adds the `y` shell wrapper

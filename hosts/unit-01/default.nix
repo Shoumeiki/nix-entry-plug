@@ -33,6 +33,7 @@
     ../../modules/desktop/gpu-screen-recorder.nix
     ../../modules/desktop/greetd.nix
     ../../modules/desktop/hyprland.nix
+    ../../modules/desktop/keyring.nix
     ../../modules/desktop/nix-ld.nix
     ../../modules/desktop/stylix.nix
     ../../modules/desktop/thunar.nix

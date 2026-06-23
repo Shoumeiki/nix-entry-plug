@@ -1,11 +1,5 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # dconf: GSettings backend used by GTK / GNOME-family apps.
-  #
-  # Needed even on Hyprland because Thunar, file pickers, GTK theming
-  # (including Stylix's GTK output), Nautilus-style apps, and many
-  # Flatpak-targeting apps read settings from dconf at runtime.
-  # ---------------------------------------------------------------------------
-
+  # Needed on Hyprland for GTK theming (Stylix), Thunar, file pickers, and
+  # Electron/Flatpak apps that read GSettings from dconf at runtime.
   programs.dconf.enable = true;
 }

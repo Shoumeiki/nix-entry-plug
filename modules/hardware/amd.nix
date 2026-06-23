@@ -1,12 +1,6 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # AMD CPU + GPU support.
-  #
-  # Targets unit-01 (Ryzen 7 7800X3D + Radeon RX 7700 XT) but is host-agnostic
-  # — any all-AMD machine can import this module unchanged.
-  # ---------------------------------------------------------------------------
-
+  # Targets unit-01 (Ryzen 7 7800X3D + RX 7700 XT); usable on any AMD machine.
   hardware = {
     # AMD CPU microcode updates applied via initrd. Mitigates errata and
     # speculative-execution bugs without waiting for a BIOS update.

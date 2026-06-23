@@ -1,9 +1,5 @@
 { lib, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Nix daemon, GC, store optimisation, allow-unfree predicate.
-  # ---------------------------------------------------------------------------
-
   nix = {
     settings = {
       experimental-features = [

@@ -1,14 +1,5 @@
 _: {
-  # ---------------------------------------------------------------------------
-  # PipeWire audio stack.
-  #
-  # PipeWire replaces both PulseAudio and JACK with a single low-latency
-  # daemon. WirePlumber is the session/policy manager (which device routes
-  # where, default sinks, etc.). ALSA compat keeps legacy apps working.
-  # ---------------------------------------------------------------------------
-
-  # PipeWire needs realtime scheduling permissions; rtkit grants them
-  # without giving the audio daemon full CAP_SYS_NICE.
+  # rtkit grants PipeWire realtime scheduling without full CAP_SYS_NICE.
   security.rtkit.enable = true;
 
   # Make sure the legacy PulseAudio service is off — PipeWire provides

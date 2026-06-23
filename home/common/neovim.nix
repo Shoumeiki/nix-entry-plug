@@ -1,39 +1,22 @@
 { pkgs, ... }:
 {
-  # ---------------------------------------------------------------------------
-  # Neovim, declaratively managed via home-manager.
-  #
-  # Options are set in Lua via `initLua`. Plugins are pinned by
-  # home-manager (each entry pulls a derivation from pkgs.vimPlugins),
-  # which means a `just switch` reproduces the editor state exactly — no
-  # `:Lazy update` divergence between machines.
-  #
-  # Theming (colours, italics, statusline accents) is pulled from Stylix
-  # via stylix.targets.neovim automatically.
-  #
-  # Grow this list deliberately: add a plugin only when you've hit the
-  # gap it fills. The goal is a comfortable editor, not a maximal one.
-  # ---------------------------------------------------------------------------
-
+  # Plugins are pinned via pkgs.vimPlugins — no :Lazy update drift between machines.
+  # Stylix themes the editor automatically via stylix.targets.neovim.
   programs.neovim = {
     enable = true;
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
 
-    # Language servers and external tools the editor reaches for. Putting
-    # them here rather than home.packages keeps the "neovim needs this"
-    # relationship visible.
+    # LSP servers and tools referenced from initLua. Kept here rather than
+    # home.packages to keep the "neovim needs this" relationship explicit.
     extraPackages = with pkgs; [
-      # Nix
-      nil # LSP
-      nixfmt # formatter
-      # Lua (for editing this very config)
+      nil
+      nixfmt
       lua-language-server
       stylua
-      # Generic
-      ripgrep # used by telescope live_grep
-      fd # used by telescope find_files
+      ripgrep
+      fd
     ];
 
     plugins = with pkgs.vimPlugins; [

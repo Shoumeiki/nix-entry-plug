@@ -2,10 +2,8 @@
   description = "nix-entry-plug — NixOS + home-manager flake for the Eva fleet";
 
   inputs = {
-    # Base packages and NixOS modules
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # User-level config management
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,7 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Secrets management (wired up in Phase 7)
+    # Secrets management (not yet wired into any module)
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,7 +44,6 @@
     };
 
     # Git hook integration (statix, deadnix, nixfmt).
-    # Note: this is the repo formerly known as `cachix/pre-commit-hooks.nix`.
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -87,9 +84,7 @@
       preCommitCheck = git-hooks.lib.${system}.run {
         src = ./.;
         hooks = {
-          # `nixfmt` (≥ v1.0) is the post-RFC-166 hook. The older
-          # `nixfmt-rfc-style` key still works but triggers a deprecation
-          # warning now that `pkgs.nixfmt-rfc-style` is an alias of `pkgs.nixfmt`.
+          # `nixfmt-rfc-style` is now an alias of `nixfmt`; use the canonical key.
           nixfmt.enable = true;
           statix.enable = true;
           deadnix.enable = true;
@@ -98,7 +93,6 @@
     in
     {
       nixosConfigurations = {
-        # Primary desktop.
         unit-01 = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = moduleArgs;
