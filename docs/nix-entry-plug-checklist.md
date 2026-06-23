@@ -219,53 +219,53 @@ Follow [`docs/install-guide.md`](./install-guide.md) end-to-end. Tick here when 
 - [x] Repo cloned to `/tmp/nix-entry-plug`
 - [x] `disko` ran cleanly, layout matches expectation (`findmnt -R /mnt`)
 - [x] `nixos-install --flake .#unit-01 --no-root-passwd` completed successfully
-- [ ] First reboot lands at Limine → ReGreet
+- [x] First reboot lands at Limine → ReGreet
 
 ##### Post-install boot validation
 
 This is the first time the system actually runs end-to-end.
 
-- [ ] Limine appears at boot
-- [ ] Plymouth splash shows during stage-1 / stage-2 boot (no wall of kernel text)
-- [ ] Default entry boots to a usable system
-- [ ] `systemd-boot-fallback` specialisation entry appears in Limine
-- [ ] `systemd-boot-fallback` boots successfully (test once, then prefer the default)
-- [ ] Login as `ellen` works
-- [ ] `hostname` returns `unit-01`
-- [ ] `ping -c 3 1.1.1.1` succeeds (ethernet)
-- [ ] `groups` shows `wheel networkmanager video audio docker libvirtd`
-- [ ] `sudo` works
-- [ ] `swapon --show` lists the labelled swap partition
+- [x] Limine appears at boot
+- [x] Plymouth splash shows during stage-1 / stage-2 boot (no wall of kernel text)
+- [x] Default entry boots to a usable system
+- [x] `systemd-boot-fallback` specialisation entry appears in Limine
+- [x] `systemd-boot-fallback` boots successfully (test once, then prefer the default)
+- [x] Login as `ellen` works
+- [x] `hostname` returns `unit-01`
+- [x] `ping -c 3 1.1.1.1` succeeds (ethernet)
+- [x] `groups` shows `wheel networkmanager video audio docker libvirtd`
+- [x] `sudo` works
+- [x] `swapon --show` lists the labelled swap partition
 - [ ] `journalctl -p err -b` is empty or only contains expected entries
-- [ ] `fwupdmgr get-devices` enumerates SSD / UEFI / peripherals
+- [x] `fwupdmgr get-devices` enumerates SSD / UEFI / peripherals
 
 ##### Post-install desktop validation
 
-- [ ] Reach ReGreet login screen
-- [ ] Hyprland session launches
-- [ ] Monitor 1 (Gigabyte M32U): 3840x2160 @ 144Hz, left
-- [ ] Monitor 2 (BenQ RD280UA): 3840x2560 @ 60Hz, right
-- [ ] Primary waybar (DP-1) shows full module set incl. AMD GPU % and temp
-- [ ] Secondary waybar (HDMI-A-1) shows workspaces + window title + clock
-- [ ] KVM test: switch input and back, workspaces stay sane (headless fallback works)
-- [ ] Passthrough submap toggles with `Super+Esc` (waybar `hyprland/submap` indicator shows status)
-- [ ] Cursor (Bibata) is consistent across Hyprland, GTK and XWayland apps
-- [ ] Stylix theming consistent across greeter, console (TTY), terminal, waybar, rofi, mako, GTK apps
-- [ ] swayosd appears on volume / mute / brightness keypress
-- [ ] Audio: UMC22 headphones, motherboard speakers, switchable in `pavucontrol`
+- [x] Reach ReGreet login screen
+- [x] Hyprland session launches
+- [x] Monitor 1 (Gigabyte M32U): 3840x2160 @ 144Hz, left
+- [x] Monitor 2 (BenQ RD280UA): 3840x2560 @ 60Hz, right
+- [x] Primary waybar (DP-1) shows full module set incl. AMD GPU % and temp
+- [x] Secondary waybar (HDMI-A-1) shows workspaces + window title + clock
+- [x] KVM test: switch input and back, workspaces stay sane (headless fallback works)
+- [x] Passthrough submap toggles with `Super+Esc` (waybar `hyprland/submap` indicator shows status)
+- [x] Cursor (Bibata) is consistent across Hyprland, GTK and XWayland apps
+- [x] Stylix theming consistent across console (TTY), terminal, waybar, rofi, mako, GTK apps
+- [x] swayosd appears on volume / mute / brightness keypress
+- [x] Audio: UMC22 headphones, motherboard speakers, switchable in `pavucontrol`
 - [ ] Bluetooth toggles via blueman, can pair a device
 - [ ] Keybinds functional (launcher, terminal, screenshot, clipboard history)
-- [ ] Apps launch (Zen, Zed, Thunar, yazi, Signal, Vesktop, mpv)
-- [ ] Screen sharing works in Vesktop
-- [ ] `gpu-screen-recorder-gtk` can capture the screen without prompting for sudo
+- [x] Apps launch (Zen, Zed, Thunar, yazi, Signal, Vesktop, mpv)
+- [x] Screen sharing works in Vesktop
+- [x] `gpu-screen-recorder-gtk` can capture the screen without prompting for sudo
 - [ ] Gaming: Steam launches, Proton game runs, gamemode + MangoHud overlay visible
 - [ ] gamescope session selectable at login
 - [ ] Hibernation: `systemctl hibernate` + clean resume to logged-in session
-- [ ] direnv activates on `cd` into the `nix-entry-plug` repo
-- [ ] fastfetch displays on new shell
-- [ ] Aliases work (`ls`, `, cowsay`, abbreviations from spec §6)
-- [ ] Git: signed commit + push via SSH works
-- [ ] Commit any post-install tweaks, push to GitHub
+- [x] direnv activates on `cd` into the `nix-entry-plug` repo
+- [x] fastfetch displays on new shell
+- [x] Aliases work (`ls`, `, cowsay`, abbreviations from spec §6)
+- [x] Git: signed commit + push via SSH works
+- [x] Commit any post-install tweaks, push to GitHub
 
 **Done when:** You're reading this document from unit-01 on NixOS.
 

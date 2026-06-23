@@ -40,21 +40,32 @@
     zed-editor
 
     # ---- Communication ---------------------------------------------------
-    signal-desktop # encrypted messaging
-    vesktop # Discord with Vencord patches (and proper screenshare on Wayland)
+    signal-desktop
+    vesktop # Discord with Vencord patches (proper Wayland screenshare)
 
     # ---- Creative --------------------------------------------------------
-    krita # digital painting
-    audacity # audio editor
+    krita
+    audacity
 
     # ---- Notes / docs ----------------------------------------------------
-    obsidian # PKM (unfree — in allowUnfreePredicate)
-    libreoffice-fresh # office suite
+    obsidian # unfree — in allowUnfreePredicate
+    libreoffice-fresh
 
     # ---- Media -----------------------------------------------------------
-    imv # image viewer (Wayland-native)
+    imv # Wayland-native image viewer
+
+    # ---- Gaming ----------------------------------------------------------
+    mangohud # in-game perf overlay (used with gamemoderun)
+    heroic # Epic / GOG / Amazon launcher
+    prismlauncher # Minecraft launcher
+
+    # ---- Desktop utilities -----------------------------------------------
+    gpu-screen-recorder-gtk # GUI for the system-level gpu-screen-recorder
+    lm_sensors # `sensors` binary used by the waybar gpu-temp module
+    bluez-tools # Bluetooth CLI management
+    papirus-icon-theme # icon theme for GTK apps in the user session
 
     # ---- Dev tooling -----------------------------------------------------
-    docker-compose # `docker compose` plugin
+    docker-compose
   ];
 }

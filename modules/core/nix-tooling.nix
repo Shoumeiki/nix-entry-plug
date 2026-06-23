@@ -1,12 +1,4 @@
-{ pkgs, ... }:
-{
-  environment.systemPackages = with pkgs; [
-    nh
-    nix-output-monitor
-    nvd
-    comma
-  ];
-
+_: {
   programs = {
     # nix-index builds a database mapping executables to the nixpkgs
     # attribute that provides them. Powers `nix-locate` and `comma`'s

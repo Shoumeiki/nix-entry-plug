@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   # Targets unit-01 (Ryzen 7 7800X3D + RX 7700 XT); usable on any AMD machine.
   hardware = {
     # AMD CPU microcode updates applied via initrd. Mitigates errata and
@@ -22,7 +21,4 @@
   # isn't a concern; consistent latency is.
   powerManagement.cpuFreqGovernor = "performance";
 
-  # Userspace temperature / fan probes. waybar's custom/gpu-temp module
-  # parses `sensors amdgpu-pci-*`; useful at the CLI too.
-  environment.systemPackages = [ pkgs.lm_sensors ];
 }

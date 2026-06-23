@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   hardware.bluetooth = {
     enable = true;
     # Don't power the radio on at boot — let the user (or blueman) toggle
@@ -13,8 +12,4 @@
   };
 
   services.blueman.enable = true;
-
-  # GUI pairing/management lives in blueman, but the CLI tool is handy
-  # for scripts and recovery.
-  environment.systemPackages = [ pkgs.bluez-tools ];
 }

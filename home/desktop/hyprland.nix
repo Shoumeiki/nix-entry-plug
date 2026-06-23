@@ -32,6 +32,7 @@
       "$fileManager" = "thunar";
       "$menu" = "rofi -show drun";
       "$browser" = "zen-beta";
+      "$editor" = "zeditor";
 
       # ---- Monitors --------------------------------------------------------
       # Connectors as enumerated on unit-01: DP-1 = Gigabyte M32U (left),
@@ -222,8 +223,10 @@
           # Apps
           "$mainMod, Return, exec, $terminal"
           "$mainMod, D, exec, $menu"
+          "$mainMod, Space, exec, $menu"
           "$mainMod, E, exec, $fileManager"
           "$mainMod, B, exec, $browser"
+          "$mainMod, Z, exec, $editor"
 
           # Window management
           "$mainMod, Q, killactive"
@@ -336,13 +339,6 @@
     };
 
     hyprpaper.enable = true;
-
-    # Clipboard history daemon — stores everything wl-paste sees so the
-    # Super+Shift+V keybind can pipe it through rofi.
-    cliphist = {
-      enable = true;
-      allowImages = true;
-    };
 
     # Polkit agent for GUI sudo prompts.
     hyprpolkitagent.enable = true;

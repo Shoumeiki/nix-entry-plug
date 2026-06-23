@@ -4,6 +4,7 @@ _: {
     ./apps.nix
     ./audio.nix
     ./browsers.nix
+    ./cliphist.nix
     ./cursor.nix
     ./fun.nix
     ./hyprland.nix

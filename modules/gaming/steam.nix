@@ -19,10 +19,4 @@
   # is running. Steam picks this up automatically; Heroic / Prism need
   # the user to wrap the game invocation in `gamemoderun`.
   programs.gamemode.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    mangohud # in-game perf overlay
-    heroic # Epic / GOG / Amazon launcher
-    prismlauncher # Minecraft launcher
-  ];
 }

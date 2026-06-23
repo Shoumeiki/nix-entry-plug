@@ -6,6 +6,7 @@ _: {
     ./direnv.nix
     ./git.nix
     ./neovim.nix
+    ./nix-tools.nix
     ./shell.nix
   ];
 }

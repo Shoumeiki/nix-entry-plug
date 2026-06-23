@@ -50,8 +50,4 @@
     targets.regreet.enable = false;
   };
 
-  # Stylix doesn't currently manage icon themes directly. Install Papirus
-  # system-wide so GTK / Qt icon-theme settings (configured per-user via
-  # home-manager later) can resolve it.
-  environment.systemPackages = [ pkgs.papirus-icon-theme ];
 }
