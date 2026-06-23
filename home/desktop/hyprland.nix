@@ -323,17 +323,17 @@
             timeout = 300;
             on-timeout = "loginctl lock-session";
           }
-          {
-            # 10 min → DPMS off
-            timeout = 600;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
-          }
-          {
-            # 30 min → suspend
-            timeout = 1800;
-            on-timeout = "systemctl suspend";
-          }
+          #{
+          # 10 min → DPMS off
+          #timeout = 600;
+          #on-timeout = "hyprctl dispatch dpms off";
+          #on-resume = "hyprctl dispatch dpms on";
+          #}
+          #{
+          # 30 min → suspend
+          #timeout = 1800;
+          #on-timeout = "systemctl suspend";
+          #}
         ];
       };
     };

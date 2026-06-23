@@ -38,6 +38,7 @@
     ../../modules/desktop/stylix.nix
     ../../modules/desktop/thunar.nix
     ../../modules/desktop/xdg-portal.nix
+    ../../modules/desktop/ollama.nix
 
     # Gaming.
     ../../modules/gaming/steam.nix
